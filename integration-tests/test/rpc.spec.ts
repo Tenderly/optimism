@@ -2,7 +2,6 @@ import {
   injectL2Context,
   TxGasLimit,
   TxGasPrice,
-  toRpcHexString,
 } from '@eth-optimism/core-utils'
 import { Wallet, BigNumber, Contract, ContractFactory } from 'ethers'
 import { ethers } from 'hardhat'
@@ -13,6 +12,8 @@ import {
   DEFAULT_TRANSACTION,
   fundUser,
   expectApprox,
+  L2_CHAINID,
+  IS_PROD_NETWORK,
 } from './shared/utils'
 import chaiAsPromised from 'chai-as-promised'
 import { OptimismEnv } from './shared/env'
@@ -132,10 +133,9 @@ describe('Basic RPC tests', () => {
         gasPrice: TxGasPrice,
       }
       const fee = tx.gasPrice.mul(tx.gasLimit)
-      const gasLimit = 5920001
 
       await expect(env.l2Wallet.sendTransaction(tx)).to.be.rejectedWith(
-        `fee too low: ${fee}, use at least tx.gasLimit = ${gasLimit} and tx.gasPrice = ${TxGasPrice.toString()}`
+        `fee too low: ${fee}, use at least tx.gasLimit =`
       )
     })
 
@@ -319,7 +319,15 @@ describe('Basic RPC tests', () => {
     // canonical transaction chain. This test catches this by
     // querying for the latest block and then waits and then queries
     // the latest block again and then asserts that they are the same.
-    it('should return the same result when new transactions are not applied', async () => {
+    //
+    // Needs to be skipped on Prod networks because this test doesn't work when
+    // other people are sending transactions to the Sequencer at the same time
+    // as this test is running.
+    it('should return the same result when new transactions are not applied', async function() {
+      if (IS_PROD_NETWORK) {
+        this.skip()
+      }
+
       // Get latest block once to start.
       const prev = await provider.getBlockWithTransactions('latest')
 
@@ -343,7 +351,7 @@ describe('Basic RPC tests', () => {
   describe('eth_chainId', () => {
     it('should get the correct chainid', async () => {
       const { chainId } = await provider.getNetwork()
-      expect(chainId).to.be.eq(420)
+      expect(chainId).to.be.eq(L2_CHAINID)
     })
   })
 
@@ -429,12 +437,12 @@ describe('Basic RPC tests', () => {
 
   describe('rollup_gasPrices', () => {
     it('should return the L1 and L2 gas prices', async () => {
-      const result = await provider.send('rollup_gasPrices', []);
+      const result = await provider.send('rollup_gasPrices', [])
       const l1GasPrice = await env.l1Wallet.provider.getGasPrice()
       const l2GasPrice = await env.gasPriceOracle.gasPrice()
 
       expect(BigNumber.from(result.l1GasPrice)).to.deep.eq(l1GasPrice)
-      expect((BigNumber.from(result.l2GasPrice))).to.deep.eq(l2GasPrice)
+      expect(BigNumber.from(result.l2GasPrice)).to.deep.eq(l2GasPrice)
     })
   })
 })
