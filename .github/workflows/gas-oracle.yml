@@ -1,5 +1,4 @@
-name: geth unit tests
-
+name: gas-oracle unit tests
 
 on:
   push:
@@ -42,4 +41,3 @@ jobs:
 
     - name: Test
       run: make test
-
