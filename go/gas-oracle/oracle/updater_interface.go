@@ -73,7 +73,7 @@ func wrapUpdateL2GasPriceFn(backend DeployContractBackend, cfg *Config) (func(fl
 				log.Error("cannot fetch gas price", "message", err)
 				return err
 			}
-			log.Debug("fetched gas price", "gas-price", gasPrice)
+			log.Trace("fetched L2 tx.gasPrice", "gas-price", gasPrice)
 			opts.GasPrice = gasPrice
 		} else {
 			// Allow a configurable gas price to be set

@@ -23,7 +23,7 @@ func GetLinearInterpolationFn(getX func() float64, x1 float64, x2 float64, y1 fl
 	}
 }
 
-func NewGasPricer(curPrice float64, floorPrice float64, getTargetGasPerSecond GetTargetGasPerSecond, maxPercentChangePerEpoch float64) (*GasPricer, error) {
+func NewGasPricer(curPrice, floorPrice float64, getTargetGasPerSecond GetTargetGasPerSecond, maxPercentChangePerEpoch float64) (*GasPricer, error) {
 	if floorPrice < 1 {
 		return nil, errors.New("floorPrice must be greater than or equal to 1")
 	}
@@ -38,14 +38,15 @@ func NewGasPricer(curPrice float64, floorPrice float64, getTargetGasPerSecond Ge
 	}, nil
 }
 
-// Calculate the next gas price given some average gas per second over the last epoch
+// CalcNextEpochGasPrice calculates the next gas price given some average
+// gas per second over the last epoch
 func (p *GasPricer) CalcNextEpochGasPrice(avgGasPerSecondLastEpoch float64) (float64, error) {
 	targetGasPerSecond := p.getTargetGasPerSecond()
 	if avgGasPerSecondLastEpoch < 0 {
-		return 0.0, errors.New("avgGasPerSecondLastEpoch cannot be negative.")
+		return 0.0, errors.New("avgGasPerSecondLastEpoch cannot be negative")
 	}
 	if targetGasPerSecond < 1 {
-		return 0.0, errors.New("gasPerSecond cannot be less than 1.")
+		return 0.0, errors.New("gasPerSecond cannot be less than 1")
 	}
 	// The percent difference between our current average gas & our target gas
 	proportionOfTarget := avgGasPerSecondLastEpoch / targetGasPerSecond
