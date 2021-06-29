@@ -3,6 +3,8 @@ package gasprices
 import (
 	"errors"
 	"math"
+
+	"github.com/ethereum/go-ethereum/log"
 )
 
 type GetTargetGasPerSecond func() float64
@@ -54,7 +56,8 @@ func (p *GasPricer) CalcNextEpochGasPrice(avgGasPerSecondLastEpoch float64) (flo
 	} else {
 		proportionToChangeBy = math.Max(proportionOfTarget, 1-p.maxChangePerEpoch)
 	}
-	return math.Ceil(math.Max(p.floorPrice, p.curPrice*proportionToChangeBy)), nil
+	log.Debug("CalcNextEpochGasPrice", "proportionToChangeBy", proportionToChangeBy, "proportionOfTarget", proportionOfTarget)
+	return math.Ceil(math.Max(p.floorPrice, math.Max(1, p.curPrice)*proportionToChangeBy)), nil
 }
 
 // End the current epoch and update the current gas price for the next epoch.
