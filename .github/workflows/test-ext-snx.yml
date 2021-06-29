@@ -1,6 +1,14 @@
 name: Exteral Tests (Synthetix)
 
-on: workflow_dispatch
+on:
+  push:
+    branches:
+      - 'master'
+      - 'develop'
+      - '*rc'
+      - 'regenesis/*'
+  pull_request:
+  workflow_dispatch:
 
 jobs:
   integration:
