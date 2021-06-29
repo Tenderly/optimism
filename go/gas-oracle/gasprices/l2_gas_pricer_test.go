@@ -15,20 +15,21 @@ func returnConstFn(retVal float64) func() float64 {
 	return func() float64 { return retVal }
 }
 
-func runCalcGasPriceTests(gp L2GasPricer, tcs []CalcGasPriceTestCase, t *testing.T) {
+func runCalcGasPriceTests(gp GasPricer, tcs []CalcGasPriceTestCase, t *testing.T) {
 	for _, tc := range tcs {
-		if tc.expectedNextGasPrice != gp.CalcNextEpochGasPrice(tc.avgGasPerSecondLastEpoch) {
+		nextEpochGasPrice, err := gp.CalcNextEpochGasPrice(tc.avgGasPerSecondLastEpoch)
+		if tc.expectedNextGasPrice != nextEpochGasPrice || err != nil {
 			t.Fatalf("failed on test: %s", tc.name)
 		}
 	}
 }
 
 func TestCalcGasPriceFarFromFloor(t *testing.T) {
-	gp := L2GasPricer{
-		curPrice:                 100,
-		floorPrice:               1,
-		getTargetGasPerSecond:    returnConstFn(10),
-		maxPercentChangePerEpoch: 0.5,
+	gp := GasPricer{
+		curPrice:              100,
+		floorPrice:            1,
+		getTargetGasPerSecond: returnConstFn(10),
+		maxChangePerEpoch:     0.5,
 	}
 	tcs := []CalcGasPriceTestCase{
 		// No change
@@ -70,11 +71,11 @@ func TestCalcGasPriceFarFromFloor(t *testing.T) {
 }
 
 func TestCalcGasPriceAtFloor(t *testing.T) {
-	gp := L2GasPricer{
-		curPrice:                 100,
-		floorPrice:               100,
-		getTargetGasPerSecond:    returnConstFn(10),
-		maxPercentChangePerEpoch: 0.5,
+	gp := GasPricer{
+		curPrice:              100,
+		floorPrice:            100,
+		getTargetGasPerSecond: returnConstFn(10),
+		maxChangePerEpoch:     0.5,
 	}
 	tcs := []CalcGasPriceTestCase{
 		// No change
@@ -100,11 +101,11 @@ func TestCalcGasPriceAtFloor(t *testing.T) {
 }
 
 func TestGasPricerUpdates(t *testing.T) {
-	gp := L2GasPricer{
-		curPrice:                 100,
-		floorPrice:               100,
-		getTargetGasPerSecond:    returnConstFn(10),
-		maxPercentChangePerEpoch: 0.5,
+	gp := GasPricer{
+		curPrice:              100,
+		floorPrice:            100,
+		getTargetGasPerSecond: returnConstFn(10),
+		maxChangePerEpoch:     0.5,
 	}
 	gp.CompleteEpoch(12.5)
 	if gp.curPrice != 125 {
@@ -146,11 +147,11 @@ func TestGasPricerDynamicTarget(t *testing.T) {
 	// TargetGasPerSecond is dynamic based on the current "mocktimestamp"
 	dynamicGetTarget := GetLinearInterpolationFn(mockTimeNow, startTimestamp, endTimestamp, startGasPerSecond, endGasPerSecond)
 
-	gp := L2GasPricer{
-		curPrice:                 100,
-		floorPrice:               1,
-		getTargetGasPerSecond:    dynamicGetTarget,
-		maxPercentChangePerEpoch: 0.5,
+	gp := GasPricer{
+		curPrice:              100,
+		floorPrice:            1,
+		getTargetGasPerSecond: dynamicGetTarget,
+		maxChangePerEpoch:     0.5,
 	}
 	gasPerSecondDemanded := returnConstFn(15)
 	for i := 0; i < 10; i += 1 {

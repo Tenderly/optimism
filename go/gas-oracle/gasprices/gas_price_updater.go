@@ -1,6 +1,7 @@
 package gasprices
 
 import (
+	"errors"
 	"sync"
 
 	"github.com/ethereum/go-ethereum/log"
@@ -11,24 +12,41 @@ type UpdateL2GasPriceFn func(float64) error
 
 type GasPriceUpdater struct {
 	mu                     *sync.RWMutex
-	gasPricer              *L2GasPricer
-	epochStartBlockNumber  float64
+	gasPricer              *GasPricer
+	epochStartBlockNumber  uint64
 	averageBlockGasLimit   float64
-	epochLengthSeconds     float64
+	epochLengthSeconds     uint64
 	getLatestBlockNumberFn GetLatestBlockNumberFn
 	updateL2GasPriceFn     UpdateL2GasPriceFn
 }
 
+func GetAverageGasPerSecond(
+	epochStartBlockNumber uint64,
+	latestBlockNumber uint64,
+	epochLengthSeconds uint64,
+	averageBlockGasLimit uint64,
+) float64 {
+	blocksPassed := latestBlockNumber - epochStartBlockNumber
+	return float64(blocksPassed * averageBlockGasLimit / epochLengthSeconds)
+}
+
 func NewGasPriceUpdater(
-	gasPricer *L2GasPricer,
-	epochStartBlockNumber float64,
+	gasPricer *GasPricer,
+	epochStartBlockNumber uint64,
 	averageBlockGasLimit float64,
-	epochLengthSeconds float64,
+	epochLengthSeconds uint64,
 	getLatestBlockNumberFn GetLatestBlockNumberFn,
 	updateL2GasPriceFn UpdateL2GasPriceFn,
-) *GasPriceUpdater {
-	// TODO: validation on input values, return an error
-	// if bad input value
+) (*GasPriceUpdater, error) {
+	if epochStartBlockNumber < 0 {
+		return nil, errors.New("epochStartBlockNumber must be non-negative.")
+	}
+	if averageBlockGasLimit < 1 {
+		return nil, errors.New("averageBlockGasLimit cannot be less than 1 gas.")
+	}
+	if epochLengthSeconds < 1 {
+		return nil, errors.New("epochLengthSeconds cannot be less than 1 second.")
+	}
 	return &GasPriceUpdater{
 		mu:                     new(sync.RWMutex),
 		gasPricer:              gasPricer,
@@ -37,7 +55,7 @@ func NewGasPriceUpdater(
 		averageBlockGasLimit:   averageBlockGasLimit,
 		getLatestBlockNumberFn: getLatestBlockNumberFn,
 		updateL2GasPriceFn:     updateL2GasPriceFn,
-	}
+	}, nil
 }
 
 func (g *GasPriceUpdater) UpdateGasPrice() error {
@@ -48,11 +66,26 @@ func (g *GasPriceUpdater) UpdateGasPrice() error {
 	if err != nil {
 		return err
 	}
-	averageGasPerSecond := (float64(latestBlockNumber) - g.epochStartBlockNumber) * g.averageBlockGasLimit / g.epochLengthSeconds
-	g.gasPricer.CompleteEpoch(averageGasPerSecond)
-	g.epochStartBlockNumber = float64(latestBlockNumber)
+	if latestBlockNumber < uint64(g.epochStartBlockNumber) {
+		return errors.New("Latest block number less than the last epoch's block number")
+	}
+	averageGasPerSecond := GetAverageGasPerSecond(
+		g.epochStartBlockNumber,
+		latestBlockNumber,
+		uint64(g.epochLengthSeconds),
+		uint64(g.averageBlockGasLimit),
+	)
 	log.Debug("UpdateGasPrice", "averageGasPerSecond", averageGasPerSecond, "current-price", g.gasPricer.curPrice)
-	return g.updateL2GasPriceFn(g.gasPricer.curPrice)
+	_, err = g.gasPricer.CompleteEpoch(averageGasPerSecond)
+	if err != nil {
+		return err
+	}
+	g.epochStartBlockNumber = latestBlockNumber
+	err = g.updateL2GasPriceFn(g.gasPricer.curPrice)
+	if err != nil {
+		return err
+	}
+	return nil
 }
 
 func (g *GasPriceUpdater) GetGasPrice() float64 {

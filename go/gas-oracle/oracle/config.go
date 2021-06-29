@@ -24,7 +24,7 @@ type Config struct {
 	targetGasPerSecond           float64
 	maxPercentChangePerEpoch     float64
 	averageBlockGasLimitPerEpoch float64
-	epochLengthSeconds           float64
+	epochLengthSeconds           uint64
 	significantFactor            float64
 }
 
@@ -78,7 +78,7 @@ func NewConfig(ctx *cli.Context) *Config {
 		log.Crit("Missing config option", "option", flags.AverageBlockGasLimitPerEpochFlag.Name)
 	}
 	if ctx.GlobalIsSet(flags.EpochLengthSecondsFlag.Name) {
-		cfg.epochLengthSeconds = ctx.GlobalFloat64(flags.EpochLengthSecondsFlag.Name)
+		cfg.epochLengthSeconds = ctx.GlobalUint64(flags.EpochLengthSecondsFlag.Name)
 	} else {
 		log.Crit("Missing config option", "option", flags.EpochLengthSecondsFlag.Name)
 	}

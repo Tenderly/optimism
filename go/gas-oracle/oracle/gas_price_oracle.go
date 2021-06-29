@@ -34,7 +34,7 @@ type GasPriceOracle struct {
 	stop      chan struct{}
 	contract  *bindings.GasPriceOracle
 	backend   DeployContractBackend
-	gasPricer *gasprices.L2GasPricer
+	gasPricer *gasprices.GasPricer
 	config    *Config
 }
 
@@ -86,7 +86,7 @@ func (g *GasPriceOracle) Loop() {
 		log.Crit("Cannot fetch tip", "message", err)
 	}
 	// Start at the tip
-	epochStartBlockNumber := float64(tip.Number.Uint64())
+	epochStartBlockNumber := tip.Number.Uint64()
 	// getLatestBlockNumberFn is used by the GasPriceUpdater
 	// to get the latest block number
 	getLatestBlockNumberFn := wrapGetLatestBlockNumberFn(g.backend)
@@ -101,7 +101,7 @@ func (g *GasPriceOracle) Loop() {
 		"averageBlockGasLimitPerEpoch", g.config.averageBlockGasLimitPerEpoch,
 		"epochLengthSeconds", g.config.epochLengthSeconds)
 
-	gasPriceUpdater := gasprices.NewGasPriceUpdater(
+	gasPriceUpdater, err := gasprices.NewGasPriceUpdater(
 		g.gasPricer,
 		epochStartBlockNumber,
 		g.config.averageBlockGasLimitPerEpoch,
@@ -109,6 +109,10 @@ func (g *GasPriceOracle) Loop() {
 		getLatestBlockNumberFn,
 		updateL2GasPriceFn,
 	)
+
+	if err != nil {
+		log.Crit("Cannot create GasPriceUpdater", "message", err)
+	}
 
 	// Iterate once per epoch
 	timer := time.NewTicker(time.Duration(g.config.epochLengthSeconds) * time.Second)
@@ -174,7 +178,7 @@ func NewGasPriceOracle(cfg *Config) (*GasPriceOracle, error) {
 	log.Info("Creating GasPricer", "currentPrice", currentPrice,
 		"floorPrice", cfg.floorPrice, "targetGasPerSecond", cfg.targetGasPerSecond,
 		"maxPercentChangePerEpoch", cfg.maxPercentChangePerEpoch)
-	gasPricer := gasprices.NewGasPricer(
+	gasPricer, err := gasprices.NewGasPricer(
 		float64(currentPrice.Uint64()),
 		cfg.floorPrice,
 		func() float64 {
@@ -182,6 +186,9 @@ func NewGasPriceOracle(cfg *Config) (*GasPriceOracle, error) {
 		},
 		cfg.maxPercentChangePerEpoch,
 	)
+	if err != nil {
+		return nil, err
+	}
 
 	chainID := cfg.chainID
 	if chainID == nil {
