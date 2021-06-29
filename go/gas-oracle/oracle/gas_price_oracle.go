@@ -65,60 +65,8 @@ func (g *GasPriceOracle) Start() error {
 
 	// TODO: Errors in this goroutine should write to an error channel
 	// and be handled externally
-	go func() {
-		tip, err := g.backend.HeaderByNumber(g.ctx, nil)
-		if err != nil {
-			log.Crit("Cannot fetch tip", "message", err)
-		}
-		// Start at the tip
-		epochStartBlockNumber := float64(tip.Number.Uint64())
+	go g.Loop()
 
-		// getLatestBlockNumberFn is used by the GasPriceUpdater
-		// to get the latest block number
-		getLatestBlockNumberFn := wrapGetLatestBlockNumberFn(g.backend)
-		// updateL2GasPriceFn is used by the GasPriceUpdater to
-		// update the gas price
-		updateL2GasPriceFn, err := wrapUpdateL2GasPriceFn(g.backend, g.config)
-		if err != nil {
-			log.Crit("error", "message", err)
-		}
-
-		gasPriceUpdater := gasprices.NewGasPriceUpdater(
-			g.gasPricer,
-			epochStartBlockNumber,
-			g.config.averageBlockGasLimitPerEpoch,
-			g.config.epochLengthSeconds,
-			getLatestBlockNumberFn,
-			updateL2GasPriceFn,
-		)
-
-		// Iterate once per epoch
-		timer := time.NewTicker(time.Duration(g.config.epochLengthSeconds) * time.Second)
-		for {
-			select {
-			case <-timer.C:
-				log.Debug("polling", "time", time.Now())
-
-				l2GasPrice, err := g.contract.GasPrice(&bind.CallOpts{
-					Context: g.ctx,
-				})
-				if err != nil {
-					log.Error("cannot get gas price", "message", err)
-					continue
-				}
-
-				if err := gasPriceUpdater.UpdateGasPrice(); err != nil {
-					log.Error("cannot update gas price", "message", err)
-					continue
-				}
-
-				newGasPrice := gasPriceUpdater.GetGasPrice()
-				log.Info("Updated gas price", "previous", l2GasPrice, "current", newGasPrice)
-			case <-g.ctx.Done():
-				g.Stop()
-			}
-		}
-	}()
 	return nil
 }
 
@@ -128,6 +76,60 @@ func (g *GasPriceOracle) Stop() {
 
 func (g *GasPriceOracle) Wait() {
 	<-g.stop
+}
+
+func (g *GasPriceOracle) Loop() {
+	tip, err := g.backend.HeaderByNumber(g.ctx, nil)
+	if err != nil {
+		log.Crit("Cannot fetch tip", "message", err)
+	}
+	// Start at the tip
+	epochStartBlockNumber := float64(tip.Number.Uint64())
+	// getLatestBlockNumberFn is used by the GasPriceUpdater
+	// to get the latest block number
+	getLatestBlockNumberFn := wrapGetLatestBlockNumberFn(g.backend)
+	// updateL2GasPriceFn is used by the GasPriceUpdater to
+	// update the gas price
+	updateL2GasPriceFn, err := wrapUpdateL2GasPriceFn(g.backend, g.config)
+	if err != nil {
+		log.Crit("error", "message", err)
+	}
+
+	gasPriceUpdater := gasprices.NewGasPriceUpdater(
+		g.gasPricer,
+		epochStartBlockNumber,
+		g.config.averageBlockGasLimitPerEpoch,
+		g.config.epochLengthSeconds,
+		getLatestBlockNumberFn,
+		updateL2GasPriceFn,
+	)
+
+	// Iterate once per epoch
+	timer := time.NewTicker(time.Duration(g.config.epochLengthSeconds) * time.Second)
+	for {
+		select {
+		case <-timer.C:
+			log.Debug("polling", "time", time.Now())
+
+			l2GasPrice, err := g.contract.GasPrice(&bind.CallOpts{
+				Context: g.ctx,
+			})
+			if err != nil {
+				log.Error("cannot get gas price", "message", err)
+				continue
+			}
+
+			if err := gasPriceUpdater.UpdateGasPrice(); err != nil {
+				log.Error("cannot update gas price", "message", err)
+				continue
+			}
+
+			newGasPrice := gasPriceUpdater.GetGasPrice()
+			log.Info("Updated gas price", "previous", l2GasPrice, "current", newGasPrice)
+		case <-g.ctx.Done():
+			g.Stop()
+		}
+	}
 }
 
 func NewGasPriceOracle(cfg *Config) (*GasPriceOracle, error) {
