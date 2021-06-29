@@ -30,7 +30,7 @@ func TestUsageOfGasPriceUpdater(t *testing.T) {
 
 	// Example loop usage
 	startBlock, _ := getLatestBlockNumber()
-	gasUpdater := NewGasPriceUpdater(gasPricer, startBlock, 11000000, 10, getLatestBlockNumber, updateL2GasPrice)
+	gasUpdater := NewGasPriceUpdater(gasPricer, float64(startBlock), 11000000, 10, getLatestBlockNumber, updateL2GasPrice)
 
 	// In these mock epochs the gas price shold go up and then down again after the time has passed
 	mockEpochs := []MockEpoch{
