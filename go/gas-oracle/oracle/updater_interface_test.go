@@ -1,11 +1,13 @@
 package oracle
 
 import (
+	"context"
 	"crypto/ecdsa"
 	"hash"
 	"math/big"
 	"testing"
 
+	"github.com/ethereum-optimism/optimism/go/gas-oracle/bindings"
 	"github.com/ethereum/go-ethereum/accounts/abi/bind"
 	"github.com/ethereum/go-ethereum/accounts/abi/bind/backends"
 	"github.com/ethereum/go-ethereum/common"
@@ -49,6 +51,71 @@ func TestWrapGetLatestBlockNumberFn(t *testing.T) {
 		if latest != uint64(i+1) {
 			t.Fatal("mismatch")
 		}
+	}
+}
+
+func TestWrapUpdateL2GasPriceFn(t *testing.T) {
+	key, _ := crypto.GenerateKey()
+	sim, db := newSimulatedBackend(key)
+	chain := sim.Blockchain()
+
+	opts, _ := bind.NewKeyedTransactorWithChainID(key, big.NewInt(1337))
+	addr, _, gpo, err := bindings.DeployGasPriceOracle(opts, sim, opts.From, big.NewInt(0))
+	if err != nil {
+		t.Fatal(err)
+	}
+	blocks, _ := core.GenerateChain(chain.Config(), chain.CurrentBlock(), chain.Engine(), db, 1, nil)
+	if _, err := chain.InsertChain(blocks); err != nil {
+		t.Fatal(err)
+	}
+	sim.Commit()
+
+	cfg := &Config{
+		privateKey:            key,
+		chainID:               big.NewInt(1337),
+		gasPriceOracleAddress: addr,
+		gasPrice:              big.NewInt(676167759),
+	}
+
+	updateL2GasPriceFn, err := wrapUpdateL2GasPriceFn(sim, cfg)
+	if err != nil {
+		t.Fatal(err)
+	}
+
+	for i := 0; i < 10; i++ {
+		err := updateL2GasPriceFn(float64(i))
+		if err != nil {
+			t.Fatal(err)
+		}
+		sim.Commit()
+		gasPrice, err := gpo.GasPrice(&bind.CallOpts{Context: context.Background()})
+		if gasPrice.Uint64() != uint64(i) {
+			t.Fatal("mismatched gas price")
+		}
+	}
+}
+
+func TestIsDifferenceSignificant(t *testing.T) {
+	tests := []struct {
+		name   string
+		a      float64
+		b      float64
+		sig    float64
+		expect bool
+	}{
+		{name: "test 1", a: 1, b: 1, sig: 0.05, expect: false},
+		{name: "test 2", a: 4, b: 1, sig: 0.25, expect: true},
+		{name: "test 3", a: 3, b: 1, sig: 0.1, expect: true},
+		{name: "test 4", a: 4, b: 1, sig: 0.9, expect: false},
+	}
+
+	for _, tc := range tests {
+		t.Run(tc.name, func(t *testing.T) {
+			result := isDifferenceSignificant(tc.a, tc.b, tc.sig)
+			if result != tc.expect {
+				t.Fatalf("mismatch %s", tc.name)
+			}
+		})
 	}
 }
 

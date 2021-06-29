@@ -15,8 +15,16 @@ import (
 	"github.com/ethereum/go-ethereum/log"
 )
 
+// errInvalidSigningKey represents the error when the signing key used
+// is not the Owner of the contract and therefore cannot update the gasprice
 var errInvalidSigningKey = errors.New("invalid signing key")
+
+// errNoChainID represents the error when the chain id is not provided
+// and it cannot be remotely fetched
 var errNoChainID = errors.New("no chain id provided")
+
+// errNoPrivateKey represents the error when the private key is not provided to
+// the application
 var errNoPrivateKey = errors.New("no private key provided")
 
 // GasPriceOracle manages a hot key that can update the L2 Gas Price
@@ -89,6 +97,10 @@ func (g *GasPriceOracle) Loop() {
 		log.Crit("error", "message", err)
 	}
 
+	log.Info("Creating GasPriceUpdater", "epochStartBlockNumber", epochStartBlockNumber,
+		"averageBlockGasLimitPerEpoch", g.config.averageBlockGasLimitPerEpoch,
+		"epochLengthSeconds", g.config.epochLengthSeconds)
+
 	gasPriceUpdater := gasprices.NewGasPriceUpdater(
 		g.gasPricer,
 		epochStartBlockNumber,
@@ -119,7 +131,9 @@ func (g *GasPriceOracle) Loop() {
 			}
 
 			newGasPrice := gasPriceUpdater.GetGasPrice()
-			log.Info("Updated gas price", "previous", l2GasPrice, "current", newGasPrice)
+			if l2GasPrice.Uint64() != uint64(newGasPrice) {
+				log.Info("Updated gas price", "previous", l2GasPrice, "current", newGasPrice)
+			}
 		case <-g.ctx.Done():
 			g.Stop()
 		}
@@ -155,9 +169,11 @@ func NewGasPriceOracle(cfg *Config) (*GasPriceOracle, error) {
 	if err != nil {
 		return nil, err
 	}
-	log.Info("Starting gas price", "price", currentPrice)
 
 	// Create a gas pricer for the gas price updater
+	log.Info("Creating GasPricer", "currentPrice", currentPrice,
+		"floorPrice", cfg.floorPrice, "targetGasPerSecond", cfg.targetGasPerSecond,
+		"maxPercentChangePerEpoch", cfg.maxPercentChangePerEpoch)
 	gasPricer := gasprices.NewGasPricer(
 		float64(currentPrice.Uint64()),
 		cfg.floorPrice,

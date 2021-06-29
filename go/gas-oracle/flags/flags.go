@@ -76,6 +76,11 @@ var SignificantFactorFlag = cli.Float64Flag{
 	Usage: "only update when the gas price changes by more than this factor",
 }
 
+var WaitForReceiptFlag = cli.BoolFlag{
+	Name:  "wait-for-receipt",
+	Usage: "wait for receipts when sending transactions",
+}
+
 var Flags = []cli.Flag{
 	EthereumHttpUrlFlag,
 	ChainIDFlag,
@@ -89,4 +94,5 @@ var Flags = []cli.Flag{
 	AverageBlockGasLimitPerEpochFlag,
 	EpochLengthSecondsFlag,
 	SignificantFactorFlag,
+	WaitForReceiptFlag,
 }

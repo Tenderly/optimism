@@ -27,6 +27,8 @@ func NewGasPriceUpdater(
 	getLatestBlockNumberFn GetLatestBlockNumberFn,
 	updateL2GasPriceFn UpdateL2GasPriceFn,
 ) *GasPriceUpdater {
+	// TODO: validation on input values, return an error
+	// if bad input value
 	return &GasPriceUpdater{
 		mu:                     new(sync.RWMutex),
 		gasPricer:              gasPricer,

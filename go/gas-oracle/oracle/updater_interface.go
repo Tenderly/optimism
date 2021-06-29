@@ -40,6 +40,13 @@ type DeployContractBackend interface {
 // perhaps this should take an options struct along with the backend?
 // how can this continue to be decomposed?
 func wrapUpdateL2GasPriceFn(backend DeployContractBackend, cfg *Config) (func(float64) error, error) {
+	if cfg.privateKey == nil {
+		return nil, errNoPrivateKey
+	}
+	if cfg.chainID == nil {
+		return nil, errNoChainID
+	}
+
 	opts, err := bind.NewKeyedTransactorWithChainID(cfg.privateKey, cfg.chainID)
 	if err != nil {
 		return nil, err
@@ -58,6 +65,7 @@ func wrapUpdateL2GasPriceFn(backend DeployContractBackend, cfg *Config) (func(fl
 	}
 
 	return func(num float64) error {
+		log.Trace("UpdateL2GasPriceFn", "gas-price", num)
 		if cfg.gasPrice == nil {
 			// Set the gas price manually to use legacy transactions
 			gasPrice, err := backend.SuggestGasPrice(context.Background())
@@ -78,6 +86,7 @@ func wrapUpdateL2GasPriceFn(backend DeployContractBackend, cfg *Config) (func(fl
 		})
 		if err != nil {
 			log.Error("cannot fetch current gas price", "message", err)
+			return err
 		}
 
 		updatedGasPrice := uint64(num)
@@ -102,14 +111,16 @@ func wrapUpdateL2GasPriceFn(backend DeployContractBackend, cfg *Config) (func(fl
 		}
 		log.Info("transaction sent", "hash", tx.Hash().Hex())
 
-		// Wait for the receipt
-		receipt, err := waitForReceipt(backend, tx)
-		if err != nil {
-			return err
-		}
+		if cfg.waitForReceipt {
+			// Wait for the receipt
+			receipt, err := waitForReceipt(backend, tx)
+			if err != nil {
+				return err
+			}
 
-		log.Info("transaction confirmed", "hash", tx.Hash().Hex(),
-			"gas-used", receipt.GasUsed, "blocknumber", receipt.BlockNumber)
+			log.Info("transaction confirmed", "hash", tx.Hash().Hex(),
+				"gas-used", receipt.GasUsed, "blocknumber", receipt.BlockNumber)
+		}
 		return nil
 	}, nil
 }

@@ -19,6 +19,7 @@ type Config struct {
 	gasPriceOracleAddress        common.Address
 	privateKey                   *ecdsa.PrivateKey
 	gasPrice                     *big.Int
+	waitForReceipt               bool
 	floorPrice                   float64
 	targetGasPerSecond           float64
 	maxPercentChangePerEpoch     float64
@@ -83,6 +84,9 @@ func NewConfig(ctx *cli.Context) *Config {
 	}
 	if ctx.GlobalIsSet(flags.SignificantFactorFlag.Name) {
 		cfg.significantFactor = ctx.GlobalFloat64(flags.SignificantFactorFlag.Name)
+	}
+	if ctx.GlobalIsSet(flags.WaitForReceiptFlag.Name) {
+		cfg.waitForReceipt = true
 	}
 	return &cfg
 }
