@@ -1,0 +1,150 @@
+package oracle
+
+import (
+	"context"
+	"errors"
+	"math"
+	"math/big"
+	"time"
+
+	"github.com/ethereum-optimism/optimism/go/gas-oracle/bindings"
+	"github.com/ethereum/go-ethereum"
+	"github.com/ethereum/go-ethereum/accounts/abi/bind"
+	"github.com/ethereum/go-ethereum/core/types"
+	"github.com/ethereum/go-ethereum/log"
+)
+
+// getLatestBlockNumberFn is used by the GasPriceUpdater
+// to get the latest block number. The outer function binds the
+// inner function to a `bind.ContractBackend` which is implemented
+// by the `ethclient.Client`
+func wrapGetLatestBlockNumberFn(backend bind.ContractBackend) func() (uint64, error) {
+	return func() (uint64, error) {
+		tip, err := backend.HeaderByNumber(context.Background(), nil)
+		if err != nil {
+			return 0, err
+		}
+		return tip.Number.Uint64(), nil
+	}
+}
+
+// DeployContractBackend represents the union of the
+// DeployBackend and the ContractBackend
+type DeployContractBackend interface {
+	bind.DeployBackend
+	bind.ContractBackend
+}
+
+// updateL2GasPriceFn is used by the GasPriceUpdater
+// to update the L2 gas price
+// perhaps this should take an options struct along with the backend?
+// how can this continue to be decomposed?
+func wrapUpdateL2GasPriceFn(backend DeployContractBackend, cfg *Config) (func(float64) error, error) {
+	opts, err := bind.NewKeyedTransactorWithChainID(cfg.privateKey, cfg.chainID)
+	if err != nil {
+		return nil, err
+	}
+	// Once https://github.com/ethereum/go-ethereum/pull/23062 is released
+	// then we can remove setting the context here
+	if opts.Context == nil {
+		opts.Context = context.Background()
+	}
+
+	// Create a new contract bindings in scope of the updateL2GasPriceFn
+	// that is returned from this function
+	contract, err := bindings.NewGasPriceOracle(cfg.gasPriceOracleAddress, backend)
+	if err != nil {
+		return nil, err
+	}
+
+	return func(num float64) error {
+		if cfg.gasPrice == nil {
+			// Set the gas price manually to use legacy transactions
+			gasPrice, err := backend.SuggestGasPrice(context.Background())
+			if err != nil {
+				log.Error("cannot fetch gas price", "message", err)
+				return err
+			}
+			log.Debug("fetched gas price", "gas-price", gasPrice)
+			opts.GasPrice = gasPrice
+		} else {
+			// Allow a configurable gas price to be set
+			opts.GasPrice = cfg.gasPrice
+		}
+
+		// Query the current L2 gas price
+		currentPrice, err := contract.GasPrice(&bind.CallOpts{
+			Context: context.Background(),
+		})
+		if err != nil {
+			log.Error("cannot fetch current gas price", "message", err)
+		}
+
+		updatedGasPrice := uint64(num)
+		// no need to update when they are the same
+		if currentPrice.Uint64() == updatedGasPrice {
+			log.Info("gas price did not change", "gas-price", updatedGasPrice)
+			return nil
+		}
+
+		// Only update the gas price when it must be changed by at least
+		// a paramaterizable amount.
+		if !isDifferenceSignificant(float64(currentPrice.Uint64()), num, cfg.significantFactor) {
+			log.Info("gas price did not significantly change", "min-factor", cfg.significantFactor,
+				"current-price", currentPrice, "next-price", num)
+			return nil
+		}
+
+		// Set the gas price by sending a transaction
+		tx, err := contract.SetGasPrice(opts, new(big.Int).SetUint64(updatedGasPrice))
+		if err != nil {
+			return err
+		}
+		log.Info("transaction sent", "hash", tx.Hash().Hex())
+
+		// Wait for the receipt
+		receipt, err := waitForReceipt(backend, tx)
+		if err != nil {
+			return err
+		}
+
+		log.Info("transaction confirmed", "hash", tx.Hash().Hex(),
+			"gas-used", receipt.GasUsed, "blocknumber", receipt.BlockNumber)
+		return nil
+	}, nil
+}
+
+// Only update the gas price when it must be changed by at least
+// a paramaterizable amount. If the param is greater than the result
+// of 1 - (min/max) where min and max are the gas prices then do not
+// update the gas price
+func isDifferenceSignificant(a, b, c float64) bool {
+	max := math.Max(a, b)
+	min := math.Min(a, b)
+	factor := 1 - (min / max)
+	if c > factor {
+		return false
+	}
+	return true
+}
+
+// Wait for the receipt by polling the backend
+func waitForReceipt(backend DeployContractBackend, tx *types.Transaction) (*types.Receipt, error) {
+	t := time.NewTicker(300 * time.Millisecond)
+	receipt := new(types.Receipt)
+	var err error
+	for range t.C {
+		receipt, err = backend.TransactionReceipt(context.Background(), tx.Hash())
+		if errors.Is(err, ethereum.NotFound) {
+			continue
+		}
+		if err != nil {
+			return nil, err
+		}
+		if receipt != nil {
+			t.Stop()
+			break
+		}
+	}
+	return receipt, nil
+}
