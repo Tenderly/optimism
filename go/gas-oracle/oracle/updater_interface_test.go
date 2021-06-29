@@ -3,20 +3,17 @@ package oracle
 import (
 	"context"
 	"crypto/ecdsa"
-	"hash"
 	"math/big"
 	"testing"
 
 	"github.com/ethereum-optimism/optimism/go/gas-oracle/bindings"
 	"github.com/ethereum/go-ethereum/accounts/abi/bind"
 	"github.com/ethereum/go-ethereum/accounts/abi/bind/backends"
-	"github.com/ethereum/go-ethereum/common"
 	"github.com/ethereum/go-ethereum/core"
 	"github.com/ethereum/go-ethereum/core/rawdb"
 	"github.com/ethereum/go-ethereum/core/types"
 	"github.com/ethereum/go-ethereum/crypto"
 	"github.com/ethereum/go-ethereum/ethdb"
-	"golang.org/x/crypto/sha3"
 )
 
 func TestWrapGetLatestBlockNumberFn(t *testing.T) {
@@ -89,6 +86,9 @@ func TestWrapUpdateL2GasPriceFn(t *testing.T) {
 		}
 		sim.Commit()
 		gasPrice, err := gpo.GasPrice(&bind.CallOpts{Context: context.Background()})
+		if err != nil {
+			t.Fatal(err)
+		}
 		if gasPrice.Uint64() != uint64(i) {
 			t.Fatal("mismatched gas price")
 		}
@@ -127,28 +127,4 @@ func newSimulatedBackend(key *ecdsa.PrivateKey) (*backends.SimulatedBackend, eth
 	db := rawdb.NewMemoryDatabase()
 	sim := backends.NewSimulatedBackendWithDatabase(db, genAlloc, gasLimit)
 	return sim, db
-}
-
-// testHasher is the helper tool for transaction/receipt list hashing.
-// The original hasher is trie, in order to get rid of import cycle,
-// use the testing hasher instead.
-type testHasher struct {
-	hasher hash.Hash
-}
-
-func newHasher() *testHasher {
-	return &testHasher{hasher: sha3.NewLegacyKeccak256()}
-}
-
-func (h *testHasher) Reset() {
-	h.hasher.Reset()
-}
-
-func (h *testHasher) Update(key, val []byte) {
-	h.hasher.Write(key)
-	h.hasher.Write(val)
-}
-
-func (h *testHasher) Hash() common.Hash {
-	return common.BytesToHash(h.hasher.Sum(nil))
 }

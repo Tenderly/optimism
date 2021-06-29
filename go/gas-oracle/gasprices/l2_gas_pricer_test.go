@@ -107,7 +107,10 @@ func TestGasPricerUpdates(t *testing.T) {
 		getTargetGasPerSecond: returnConstFn(10),
 		maxChangePerEpoch:     0.5,
 	}
-	gp.CompleteEpoch(12.5)
+	_, err := gp.CompleteEpoch(12.5)
+	if err != nil {
+		t.Fatal(err)
+	}
 	if gp.curPrice != 125 {
 		t.Fatalf("gp.curPrice not updated correctly. Got: %v, expected: %v", gp.curPrice, 125)
 	}
@@ -157,7 +160,10 @@ func TestGasPricerDynamicTarget(t *testing.T) {
 	for i := 0; i < 10; i += 1 {
 		mockTimestamp = float64(i * 10)
 		expectedPrice := math.Ceil(gp.curPrice * math.Max(0.5, gasPerSecondDemanded()/dynamicGetTarget()))
-		gp.CompleteEpoch(gasPerSecondDemanded())
+		_, err := gp.CompleteEpoch(gasPerSecondDemanded())
+		if err != nil {
+			t.Fatal(err)
+		}
 		if gp.curPrice != expectedPrice {
 			t.Fatalf("gp.curPrice not updated correctly. Got: %v expected: %v", gp.curPrice, expectedPrice)
 		}

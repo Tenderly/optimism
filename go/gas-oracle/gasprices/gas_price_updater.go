@@ -38,9 +38,6 @@ func NewGasPriceUpdater(
 	getLatestBlockNumberFn GetLatestBlockNumberFn,
 	updateL2GasPriceFn UpdateL2GasPriceFn,
 ) (*GasPriceUpdater, error) {
-	if epochStartBlockNumber < 0 {
-		return nil, errors.New("epochStartBlockNumber must be non-negative.")
-	}
 	if averageBlockGasLimit < 1 {
 		return nil, errors.New("averageBlockGasLimit cannot be less than 1 gas.")
 	}

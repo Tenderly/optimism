@@ -46,9 +46,7 @@ func NewConfig(ctx *cli.Context) *Config {
 	}
 	if ctx.GlobalIsSet(flags.PrivateKeyFlag.Name) {
 		hex := ctx.GlobalString(flags.PrivateKeyFlag.Name)
-		if strings.HasPrefix(hex, "0x") {
-			hex = hex[2:]
-		}
+		hex = strings.TrimPrefix(hex, "0x")
 		key, err := crypto.HexToECDSA(hex)
 		if err != nil {
 			log.Error(fmt.Sprintf("Option %q: %v", flags.PrivateKeyFlag.Name, err))

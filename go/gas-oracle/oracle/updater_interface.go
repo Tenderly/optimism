@@ -133,10 +133,7 @@ func isDifferenceSignificant(a, b, c float64) bool {
 	max := math.Max(a, b)
 	min := math.Min(a, b)
 	factor := 1 - (min / max)
-	if c > factor {
-		return false
-	}
-	return true
+	return c <= factor
 }
 
 // Wait for the receipt by polling the backend

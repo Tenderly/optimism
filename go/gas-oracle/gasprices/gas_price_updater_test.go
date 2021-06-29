@@ -72,7 +72,9 @@ func TestUpdateGasPriceCallsUpdateL2GasPriceFn(t *testing.T) {
 		return nil
 	}
 	incrementCurrentBlock(3)
-	gasUpdater.UpdateGasPrice()
+	if err := gasUpdater.UpdateGasPrice(); err != nil {
+		t.Fatal(err)
+	}
 	if wasCalled != true {
 		t.Fatalf("Expected updateL2GasPrice to be called.")
 	}
@@ -89,7 +91,9 @@ func TestUpdateGasPriceCorrectlyUpdatesAZeroBlockEpoch(t *testing.T) {
 		gasPriceAfter = gasPrice
 		return nil
 	}
-	gasUpdater.UpdateGasPrice()
+	if err := gasUpdater.UpdateGasPrice(); err != nil {
+		t.Fatal(err)
+	}
 	if gasPriceBefore < gasPriceAfter {
 		t.Fatalf("Expected gasPrice to go down because we had fewer than 3 blocks in the epoch.")
 	}
