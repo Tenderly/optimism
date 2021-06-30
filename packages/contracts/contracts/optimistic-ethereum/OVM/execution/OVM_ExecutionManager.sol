@@ -1054,7 +1054,7 @@ contract OVM_ExecutionManager is iOVM_ExecutionManager, Lib_AddressResolver {
             (uint256(_contract) & uint256(0xffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff0000))
             == uint256(CONTAINER_CONTRACT_PREFIX)
         ) {
-            // EVM does not return data in the success case, see: https://github.com/ethereum/go-ethereum/blob/aae7660410f0ef90279e14afaaf2f429fdc2a186/core/vm/instructions.go#L600-L604
+            // EVM does not return data in the success case, see: https://github.com/tenderly/optimism/l2geth/blob/aae7660410f0ef90279e14afaaf2f429fdc2a186/core/vm/instructions.go#L600-L604
             return (true, hex'');
         }
 
@@ -1107,7 +1107,7 @@ contract OVM_ExecutionManager is iOVM_ExecutionManager, Lib_AddressResolver {
         ) {
             // Handle out-of-intrinsic gas consistent with EVM behavior -- the subcall "appears to revert" if we don't have enough gas to transfer the ETH.
             // Similar to dynamic gas cost of value exceeding gas here:
-            // https://github.com/ethereum/go-ethereum/blob/c503f98f6d5e80e079c1d8a3601d188af2a899da/core/vm/interpreter.go#L268-L273
+            // https://github.com/tenderly/optimism/l2geth/blob/c503f98f6d5e80e079c1d8a3601d188af2a899da/core/vm/interpreter.go#L268-L273
             if (gasleft() < CALL_WITH_VALUE_INTRINSIC_GAS) {
                 return (false, hex"");
             }
@@ -1130,7 +1130,7 @@ contract OVM_ExecutionManager is iOVM_ExecutionManager, Lib_AddressResolver {
             );
 
             // If the ETH transfer fails (should only be possible in the case of insufficient balance), then treat this as a revert.
-            // This mirrors EVM behavior, see https://github.com/ethereum/go-ethereum/blob/2dee31930c9977af2a9fcb518fb9838aa609a7cf/core/vm/evm.go#L298
+            // This mirrors EVM behavior, see https://github.com/tenderly/optimism/l2geth/blob/2dee31930c9977af2a9fcb518fb9838aa609a7cf/core/vm/evm.go#L298
             if (!transferredOvmEth) {
                 return (false, hex"");
             }

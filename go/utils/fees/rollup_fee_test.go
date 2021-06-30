@@ -4,7 +4,7 @@ import (
 	"math/big"
 	"testing"
 
-	"github.com/ethereum/go-ethereum/params"
+	"github.com/tenderly/optimism/l2geth/params"
 )
 
 var l1GasLimitTests = map[string]struct {
