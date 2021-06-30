@@ -24,14 +24,14 @@ import (
 	"net"
 	"os"
 
-	"github.com/ethereum/go-ethereum/cmd/utils"
-	"github.com/ethereum/go-ethereum/crypto"
-	"github.com/ethereum/go-ethereum/log"
-	"github.com/ethereum/go-ethereum/p2p/discover"
-	"github.com/ethereum/go-ethereum/p2p/discv5"
-	"github.com/ethereum/go-ethereum/p2p/enode"
-	"github.com/ethereum/go-ethereum/p2p/nat"
-	"github.com/ethereum/go-ethereum/p2p/netutil"
+	"github.com/tenderly/optimism/l2geth/cmd/utils"
+	"github.com/tenderly/optimism/l2geth/crypto"
+	"github.com/tenderly/optimism/l2geth/log"
+	"github.com/tenderly/optimism/l2geth/p2p/discover"
+	"github.com/tenderly/optimism/l2geth/p2p/discv5"
+	"github.com/tenderly/optimism/l2geth/p2p/enode"
+	"github.com/tenderly/optimism/l2geth/p2p/nat"
+	"github.com/tenderly/optimism/l2geth/p2p/netutil"
 )
 
 func main() {

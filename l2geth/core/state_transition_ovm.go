@@ -4,10 +4,10 @@ import (
 	"fmt"
 	"math/big"
 
-	"github.com/ethereum/go-ethereum/common"
-	"github.com/ethereum/go-ethereum/core/types"
-	"github.com/ethereum/go-ethereum/core/vm"
-	"github.com/ethereum/go-ethereum/rollup/dump"
+	"github.com/tenderly/optimism/l2geth/common"
+	"github.com/tenderly/optimism/l2geth/core/types"
+	"github.com/tenderly/optimism/l2geth/core/vm"
+	"github.com/tenderly/optimism/l2geth/rollup/dump"
 )
 
 var ZeroAddress = common.HexToAddress("0x0000000000000000000000000000000000000000")

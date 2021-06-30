@@ -34,13 +34,13 @@ import (
 	"sync"
 	"time"
 
-	"github.com/ethereum/go-ethereum/accounts"
-	"github.com/ethereum/go-ethereum/common"
-	"github.com/ethereum/go-ethereum/core/types"
-	"github.com/ethereum/go-ethereum/core/vm"
-	"github.com/ethereum/go-ethereum/crypto"
-	"github.com/ethereum/go-ethereum/event"
-	"github.com/ethereum/go-ethereum/log"
+	"github.com/tenderly/optimism/l2geth/accounts"
+	"github.com/tenderly/optimism/l2geth/common"
+	"github.com/tenderly/optimism/l2geth/core/types"
+	"github.com/tenderly/optimism/l2geth/core/vm"
+	"github.com/tenderly/optimism/l2geth/crypto"
+	"github.com/tenderly/optimism/l2geth/event"
+	"github.com/tenderly/optimism/l2geth/log"
 )
 
 var (

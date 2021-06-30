@@ -25,16 +25,16 @@ import (
 	"sync/atomic"
 	"time"
 
-	"github.com/ethereum/go-ethereum"
-	"github.com/ethereum/go-ethereum/common"
-	"github.com/ethereum/go-ethereum/core/rawdb"
-	"github.com/ethereum/go-ethereum/core/types"
-	"github.com/ethereum/go-ethereum/ethdb"
-	"github.com/ethereum/go-ethereum/event"
-	"github.com/ethereum/go-ethereum/log"
-	"github.com/ethereum/go-ethereum/metrics"
-	"github.com/ethereum/go-ethereum/params"
-	"github.com/ethereum/go-ethereum/trie"
+	"github.com/tenderly/optimism/l2geth"
+	"github.com/tenderly/optimism/l2geth/common"
+	"github.com/tenderly/optimism/l2geth/core/rawdb"
+	"github.com/tenderly/optimism/l2geth/core/types"
+	"github.com/tenderly/optimism/l2geth/ethdb"
+	"github.com/tenderly/optimism/l2geth/event"
+	"github.com/tenderly/optimism/l2geth/log"
+	"github.com/tenderly/optimism/l2geth/metrics"
+	"github.com/tenderly/optimism/l2geth/params"
+	"github.com/tenderly/optimism/l2geth/trie"
 )
 
 var (

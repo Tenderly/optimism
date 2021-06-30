@@ -25,11 +25,11 @@ import (
 	"sync/atomic"
 	"time"
 
-	"github.com/ethereum/go-ethereum/common"
-	"github.com/ethereum/go-ethereum/ethdb"
-	"github.com/ethereum/go-ethereum/log"
-	"github.com/ethereum/go-ethereum/metrics"
-	"github.com/ethereum/go-ethereum/params"
+	"github.com/tenderly/optimism/l2geth/common"
+	"github.com/tenderly/optimism/l2geth/ethdb"
+	"github.com/tenderly/optimism/l2geth/log"
+	"github.com/tenderly/optimism/l2geth/metrics"
+	"github.com/tenderly/optimism/l2geth/params"
 	"github.com/prometheus/tsdb/fileutil"
 )
 

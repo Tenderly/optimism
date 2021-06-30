@@ -22,9 +22,9 @@ import (
 	"net"
 	"time"
 
-	"github.com/ethereum/go-ethereum/log"
-	"github.com/ethereum/go-ethereum/p2p/enode"
-	"github.com/ethereum/go-ethereum/p2p/netutil"
+	"github.com/tenderly/optimism/l2geth/log"
+	"github.com/tenderly/optimism/l2geth/p2p/enode"
+	"github.com/tenderly/optimism/l2geth/p2p/netutil"
 )
 
 const (
