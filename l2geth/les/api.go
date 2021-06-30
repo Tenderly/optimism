@@ -22,9 +22,9 @@ import (
 	"math"
 	"time"
 
-	"github.com/ethereum/go-ethereum/common/hexutil"
-	"github.com/ethereum/go-ethereum/common/mclock"
-	"github.com/ethereum/go-ethereum/p2p/enode"
+	"github.com/tenderly/optimism/l2geth/common/hexutil"
+	"github.com/tenderly/optimism/l2geth/common/mclock"
+	"github.com/tenderly/optimism/l2geth/p2p/enode"
 )
 
 var (

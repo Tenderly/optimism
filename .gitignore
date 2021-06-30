@@ -25,3 +25,5 @@ packages/data-transport-layer/db
 
 .env
 *.log
+
+.idea

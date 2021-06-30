@@ -6,7 +6,7 @@ import (
 	"reflect"
 	"testing"
 
-	"github.com/ethereum/go-ethereum/common"
+	"github.com/tenderly/optimism/l2geth/common"
 )
 
 var (

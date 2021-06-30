@@ -32,7 +32,7 @@ Extensive documentation is available [here](http://community.optimism.io/docs/).
     * [`data-transport-layer`](./packages/data-transport-layer): Event indexer, allowing the `l2geth` node to access L1 data
     * [`batch-submitter`](./packages/batch-submitter): Daemon for submitting L2 transaction and state root batches to L1
     * [`message-relayer`](./packages/message-relayer): Service for relaying L2 messages to L1
-* [`l2geth`](./l2geth): Fork of [go-ethereum v1.9.10](https://github.com/ethereum/go-ethereum/tree/v1.9.10) implementing the [OVM](https://research.paradigm.xyz/optimism#optimistic-geth).
+* [`l2geth`](./l2geth): Fork of [go-ethereum v1.9.10](https://github.com/tenderly/optimism/l2geth/tree/v1.9.10) implementing the [OVM](https://research.paradigm.xyz/optimism#optimistic-geth).
 * [`integration-tests`](./integration-tests): Integration tests between a L1 testnet, `l2geth`,
 * [`ops`](./ops): Contains Dockerfiles for containerizing each service involved in the protocol,
 as well as a docker-compose file for bringing up local testnets easily
@@ -259,6 +259,6 @@ yarn test:slither
 
 ## License
 
-Code forked from [`go-ethereum`](https://github.com/ethereum/go-ethereum) under the name [`l2geth`](https://github.com/ethereum-optimism/optimism/tree/master/l2geth) is licensed under the [GNU GPLv3](https://gist.github.com/kn9ts/cbe95340d29fc1aaeaa5dd5c059d2e60) in accordance with the [original license](https://github.com/ethereum/go-ethereum/blob/master/COPYING).
+Code forked from [`go-ethereum`](https://github.com/tenderly/optimism/l2geth) under the name [`l2geth`](https://github.com/ethereum-optimism/optimism/tree/master/l2geth) is licensed under the [GNU GPLv3](https://gist.github.com/kn9ts/cbe95340d29fc1aaeaa5dd5c059d2e60) in accordance with the [original license](https://github.com/tenderly/optimism/l2geth/blob/master/COPYING).
 
 All other files within this repository are licensed under the [MIT License](https://github.com/ethereum-optimism/optimism/blob/master/LICENSE) unless stated otherwise.

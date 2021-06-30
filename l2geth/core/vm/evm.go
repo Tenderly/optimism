@@ -26,13 +26,13 @@ import (
 	"sync/atomic"
 	"time"
 
-	"github.com/ethereum/go-ethereum/accounts/abi"
-	"github.com/ethereum/go-ethereum/common"
-	"github.com/ethereum/go-ethereum/common/hexutil"
-	"github.com/ethereum/go-ethereum/crypto"
-	"github.com/ethereum/go-ethereum/log"
-	"github.com/ethereum/go-ethereum/params"
-	"github.com/ethereum/go-ethereum/rollup/dump"
+	"github.com/tenderly/optimism/l2geth/accounts/abi"
+	"github.com/tenderly/optimism/l2geth/common"
+	"github.com/tenderly/optimism/l2geth/common/hexutil"
+	"github.com/tenderly/optimism/l2geth/crypto"
+	"github.com/tenderly/optimism/l2geth/log"
+	"github.com/tenderly/optimism/l2geth/params"
+	"github.com/tenderly/optimism/l2geth/rollup/dump"
 )
 
 // codec is a decoder for the return values of the execution manager. It decodes
