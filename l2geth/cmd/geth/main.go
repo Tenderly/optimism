@@ -18,31 +18,29 @@
 package main
 
 import (
-	"fmt"
-	"math"
-	"os"
-	"runtime"
-	godebug "runtime/debug"
-	"sort"
-	"strconv"
-	"strings"
-	"time"
+  "fmt"
+  "math"
+  "os"
+  godebug "runtime/debug"
+  "sort"
+  "strconv"
+  "strings"
+  "time"
 
-	"github.com/elastic/gosigar"
-	"github.com/tenderly/optimism/l2geth/accounts"
-	"github.com/tenderly/optimism/l2geth/accounts/keystore"
-	"github.com/tenderly/optimism/l2geth/cmd/utils"
-	"github.com/tenderly/optimism/l2geth/common"
-	"github.com/tenderly/optimism/l2geth/console"
-	"github.com/tenderly/optimism/l2geth/eth"
-	"github.com/tenderly/optimism/l2geth/eth/downloader"
-	"github.com/tenderly/optimism/l2geth/ethclient"
-	"github.com/tenderly/optimism/l2geth/internal/debug"
-	"github.com/tenderly/optimism/l2geth/les"
-	"github.com/tenderly/optimism/l2geth/log"
-	"github.com/tenderly/optimism/l2geth/metrics"
-	"github.com/tenderly/optimism/l2geth/node"
-	cli "gopkg.in/urfave/cli.v1"
+  "github.com/tenderly/optimism/l2geth/accounts"
+  "github.com/tenderly/optimism/l2geth/accounts/keystore"
+  "github.com/tenderly/optimism/l2geth/cmd/utils"
+  "github.com/tenderly/optimism/l2geth/common"
+  "github.com/tenderly/optimism/l2geth/console"
+  "github.com/tenderly/optimism/l2geth/eth"
+  "github.com/tenderly/optimism/l2geth/eth/downloader"
+  "github.com/tenderly/optimism/l2geth/ethclient"
+  "github.com/tenderly/optimism/l2geth/internal/debug"
+  "github.com/tenderly/optimism/l2geth/les"
+  "github.com/tenderly/optimism/l2geth/log"
+  "github.com/tenderly/optimism/l2geth/metrics"
+  "github.com/tenderly/optimism/l2geth/node"
+  cli "gopkg.in/urfave/cli.v1"
 )
 
 const (
@@ -287,19 +285,6 @@ func prepare(ctx *cli.Context) {
 	if ctx.GlobalString(utils.SyncModeFlag.Name) == "light" && !ctx.GlobalIsSet(utils.CacheFlag.Name) {
 		log.Info("Dropping default light client cache", "provided", ctx.GlobalInt(utils.CacheFlag.Name), "updated", 128)
 		ctx.GlobalSet(utils.CacheFlag.Name, strconv.Itoa(128))
-	}
-	// Cap the cache allowance and tune the garbage collector
-	var mem gosigar.Mem
-	// Workaround until OpenBSD support lands into gosigar
-	// Check https://github.com/elastic/gosigar#supported-platforms
-	if runtime.GOOS != "openbsd" {
-		if err := mem.Get(); err == nil {
-			allowance := int(mem.Total / 1024 / 1024 / 3)
-			if cache := ctx.GlobalInt(utils.CacheFlag.Name); cache > allowance {
-				log.Warn("Sanitizing cache to Go's GC limits", "provided", cache, "updated", allowance)
-				ctx.GlobalSet(utils.CacheFlag.Name, strconv.Itoa(allowance))
-			}
-		}
 	}
 	// Ensure Go's GC ignores the database cache for trigger percentage
 	cache := ctx.GlobalInt(utils.CacheFlag.Name)
