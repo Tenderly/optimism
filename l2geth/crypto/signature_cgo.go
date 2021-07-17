@@ -23,8 +23,9 @@ import (
 	"crypto/elliptic"
 	"fmt"
 
+	// TODO(nebojsa): This hack is introduced so that we don't run into problems while compiling cgo
+	"github.com/ethereum/go-ethereum/crypto/secp256k1"
 	"github.com/tenderly/optimism/l2geth/common/math"
-	"github.com/tenderly/optimism/l2geth/crypto/secp256k1"
 )
 
 // Ecrecover returns the uncompressed public key that created the given signature.
