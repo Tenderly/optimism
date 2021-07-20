@@ -1,9 +1,7 @@
 package vm
 
 import (
-	"os"
-
-	"github.com/tenderly/optimism/l2geth/common"
+  "github.com/tenderly/optimism/l2geth/common"
 )
 
 // AbiBytesTrue represents the ABI encoding of "true" as a byte slice
@@ -16,5 +14,7 @@ var AbiBytesFalse = common.FromHex("0x000000000000000000000000000000000000000000
 var UsingOVM bool
 
 func init() {
-	UsingOVM = os.Getenv("USING_OVM") == "true"
+  // We always set this to true so we don't have to configure env variable in all environments
+	// UsingOVM = os.Getenv("USING_OVM") == "true"
+  UsingOVM = true
 }
