@@ -19,13 +19,13 @@
 package crypto
 
 import (
-  "crypto/ecdsa"
-  "crypto/elliptic"
-  "fmt"
+	"crypto/ecdsa"
+	"crypto/elliptic"
+	"fmt"
 
-  "github.com/tenderly/optimism/l2geth/common/math"
-  // TODO(nebojsa): This hack is introduced so that we don't run into problems while compiling cgo
-  "github.com/tenderly/optimism/l2geth/crypto/secp256k1"
+	// TODO(nebojsa): This hack is introduced so that we don't run into problems while compiling cgo
+	"github.com/ethereum/go-ethereum/crypto/secp256k1"
+	"github.com/tenderly/optimism/l2geth/common/math"
 )
 
 // Ecrecover returns the uncompressed public key that created the given signature.
