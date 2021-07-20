@@ -22,7 +22,7 @@ type ovmTransaction struct {
 	Data          []uint8        `json:"data"`
 }
 
-func toExecutionManagerRun(evm *vm.EVM, msg Message) (Message, error) {
+func ToExecutionManagerRun(evm *vm.EVM, msg Message) (Message, error) {
 	tx := ovmTransaction{
 		evm.Context.Time,
 		msg.L1BlockNumber(),
