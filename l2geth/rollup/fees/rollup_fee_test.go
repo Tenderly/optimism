@@ -1,12 +1,12 @@
 package fees
 
 import (
-  "errors"
-  "math/big"
-  "testing"
+	"errors"
+	"math/big"
+	"testing"
 
-  "github.com/tenderly/optimism/l2geth/common"
-  "github.com/tenderly/optimism/l2geth/params"
+	"github.com/tenderly/optimism/l2geth/common"
+	"github.com/tenderly/optimism/l2geth/params"
 )
 
 var l1GasLimitTests = map[string]struct {

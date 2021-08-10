@@ -26,12 +26,12 @@ import (
 	"sync"
 	"time"
 
+	lru "github.com/hashicorp/golang-lru"
 	"github.com/tenderly/optimism/l2geth/common/mclock"
 	"github.com/tenderly/optimism/l2geth/crypto"
 	"github.com/tenderly/optimism/l2geth/log"
 	"github.com/tenderly/optimism/l2geth/p2p/enode"
 	"github.com/tenderly/optimism/l2geth/p2p/enr"
-	lru "github.com/hashicorp/golang-lru"
 	"golang.org/x/time/rate"
 )
 

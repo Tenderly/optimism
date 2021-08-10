@@ -30,6 +30,7 @@ import (
 	"strings"
 	"time"
 
+	"github.com/gorilla/websocket"
 	"github.com/tenderly/optimism/l2geth/common"
 	"github.com/tenderly/optimism/l2geth/common/mclock"
 	"github.com/tenderly/optimism/l2geth/consensus"
@@ -41,7 +42,6 @@ import (
 	"github.com/tenderly/optimism/l2geth/log"
 	"github.com/tenderly/optimism/l2geth/p2p"
 	"github.com/tenderly/optimism/l2geth/rpc"
-	"github.com/gorilla/websocket"
 )
 
 const (

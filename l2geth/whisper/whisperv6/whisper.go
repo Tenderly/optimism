@@ -27,13 +27,13 @@ import (
 	"time"
 
 	mapset "github.com/deckarep/golang-set"
+	"github.com/syndtr/goleveldb/leveldb/errors"
 	"github.com/tenderly/optimism/l2geth/common"
 	"github.com/tenderly/optimism/l2geth/crypto"
 	"github.com/tenderly/optimism/l2geth/log"
 	"github.com/tenderly/optimism/l2geth/p2p"
 	"github.com/tenderly/optimism/l2geth/rlp"
 	"github.com/tenderly/optimism/l2geth/rpc"
-	"github.com/syndtr/goleveldb/leveldb/errors"
 	"golang.org/x/crypto/pbkdf2"
 	"golang.org/x/sync/syncmap"
 )

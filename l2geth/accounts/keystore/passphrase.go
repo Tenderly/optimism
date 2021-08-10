@@ -38,11 +38,11 @@ import (
 	"os"
 	"path/filepath"
 
+	"github.com/pborman/uuid"
 	"github.com/tenderly/optimism/l2geth/accounts"
 	"github.com/tenderly/optimism/l2geth/common"
 	"github.com/tenderly/optimism/l2geth/common/math"
 	"github.com/tenderly/optimism/l2geth/crypto"
-	"github.com/pborman/uuid"
 	"golang.org/x/crypto/pbkdf2"
 	"golang.org/x/crypto/scrypt"
 )

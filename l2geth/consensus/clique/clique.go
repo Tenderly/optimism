@@ -26,6 +26,7 @@ import (
 	"sync"
 	"time"
 
+	lru "github.com/hashicorp/golang-lru"
 	"github.com/tenderly/optimism/l2geth/accounts"
 	"github.com/tenderly/optimism/l2geth/common"
 	"github.com/tenderly/optimism/l2geth/common/hexutil"
@@ -40,7 +41,6 @@ import (
 	"github.com/tenderly/optimism/l2geth/params"
 	"github.com/tenderly/optimism/l2geth/rlp"
 	"github.com/tenderly/optimism/l2geth/rpc"
-	lru "github.com/hashicorp/golang-lru"
 	"golang.org/x/crypto/sha3"
 )
 

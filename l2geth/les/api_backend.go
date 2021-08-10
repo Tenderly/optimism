@@ -30,7 +30,6 @@ import (
 	"github.com/tenderly/optimism/l2geth/core/state"
 	"github.com/tenderly/optimism/l2geth/core/types"
 	"github.com/tenderly/optimism/l2geth/core/vm"
-	"github.com/tenderly/optimism/l2geth/diffdb"
 	"github.com/tenderly/optimism/l2geth/eth/downloader"
 	"github.com/tenderly/optimism/l2geth/eth/gasprice"
 	"github.com/tenderly/optimism/l2geth/ethdb"
@@ -76,10 +75,6 @@ func (b *LesApiBackend) ChainConfig() *params.ChainConfig {
 
 func (b *LesApiBackend) CurrentBlock() *types.Block {
 	return types.NewBlockWithHeader(b.eth.BlockChain().CurrentHeader())
-}
-
-func (b *LesApiBackend) GetDiff(*big.Int) (diffdb.Diff, error) {
-	return nil, errors.New("Diffs not supported in light client mode")
 }
 
 func (b *LesApiBackend) SetHead(number uint64) {

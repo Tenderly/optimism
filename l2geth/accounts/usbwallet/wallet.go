@@ -25,13 +25,13 @@ import (
 	"sync"
 	"time"
 
+	"github.com/karalabe/usb"
 	ethereum "github.com/tenderly/optimism/l2geth"
 	"github.com/tenderly/optimism/l2geth/accounts"
 	"github.com/tenderly/optimism/l2geth/common"
 	"github.com/tenderly/optimism/l2geth/core/types"
 	"github.com/tenderly/optimism/l2geth/crypto"
 	"github.com/tenderly/optimism/l2geth/log"
-	"github.com/karalabe/usb"
 )
 
 // Maximum time between wallet health checks to detect USB unplugs.

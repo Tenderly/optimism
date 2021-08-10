@@ -40,7 +40,6 @@ import (
 	"github.com/tenderly/optimism/l2geth/core/types"
 	"github.com/tenderly/optimism/l2geth/core/vm"
 	"github.com/tenderly/optimism/l2geth/crypto"
-	"github.com/tenderly/optimism/l2geth/diffdb"
 	"github.com/tenderly/optimism/l2geth/log"
 	"github.com/tenderly/optimism/l2geth/p2p"
 	"github.com/tenderly/optimism/l2geth/params"
@@ -417,7 +416,7 @@ func (s *PrivateAccountAPI) SignTransaction(ctx context.Context, args SendTxArgs
 //
 // The key used to calculate the signature is decrypted with the given password.
 //
-// https://github.com/tenderly/optimism/l2geth/wiki/Management-APIs#personal_sign
+// https://github.com/ethereum/go-ethereum/wiki/Management-APIs#personal_sign
 func (s *PrivateAccountAPI) Sign(ctx context.Context, data hexutil.Bytes, addr common.Address, passwd string) (hexutil.Bytes, error) {
 	// Look up the wallet containing the requested signer
 	account := accounts.Account{Address: addr}
@@ -445,7 +444,7 @@ func (s *PrivateAccountAPI) Sign(ctx context.Context, data hexutil.Bytes, addr c
 // Note, the signature must conform to the secp256k1 curve R, S and V values, where
 // the V value must be 27 or 28 for legacy reasons.
 //
-// https://github.com/tenderly/optimism/l2geth/wiki/Management-APIs#personal_ecRecover
+// https://github.com/ethereum/go-ethereum/wiki/Management-APIs#personal_ecRecover
 func (s *PrivateAccountAPI) EcRecover(ctx context.Context, data, sig hexutil.Bytes) (common.Address, error) {
 	if len(sig) != crypto.SignatureLength {
 		return common.Address{}, fmt.Errorf("signature must be %d bytes long", crypto.SignatureLength)
@@ -569,61 +568,6 @@ type HeaderMeta struct {
 	Hash      common.Hash `json:"hash"`
 	StateRoot common.Hash `json:"stateRoot"`
 	Timestamp uint64      `json:"timestamp"`
-}
-
-func (s *PublicBlockChainAPI) GetStateDiff(ctx context.Context, blockNrOrHash rpc.BlockNumberOrHash) (diffdb.Diff, error) {
-	_, header, err := s.b.StateAndHeaderByNumberOrHash(ctx, blockNrOrHash)
-	if err != nil {
-		return nil, err
-	}
-	return s.b.GetDiff(new(big.Int).Add(header.Number, big.NewInt(1)))
-}
-
-// GetStateDiffProof returns the Merkle-proofs corresponding to all the accounts and
-// storage slots which were touched for a given block number or hash.
-func (s *PublicBlockChainAPI) GetStateDiffProof(ctx context.Context, blockNrOrHash rpc.BlockNumberOrHash) (*StateDiffProof, error) {
-	state, header, err := s.b.StateAndHeaderByNumberOrHash(ctx, blockNrOrHash)
-	if state == nil || header == nil || err != nil {
-		return nil, err
-	}
-
-	// get the changed accounts for this block
-	diffs, err := s.GetStateDiff(ctx, blockNrOrHash)
-	if err != nil {
-		return nil, err
-	}
-
-	// for each changed account, get their proof
-	var accounts []AccountResult
-	for address, keys := range diffs {
-		// need to convert the hashes to strings, we could maybe refactor getProof
-		// alternatively
-		keyStrings := make([]string, len(keys))
-		for i, key := range keys {
-			keyStrings[i] = key.Key.String()
-		}
-
-		// get the proofs
-		res, err := s.GetProof(ctx, address, keyStrings, blockNrOrHash)
-		if err != nil {
-			return nil, err
-		}
-
-		accounts = append(accounts, *res)
-	}
-
-	// add some metadata
-	stateDiffProof := &StateDiffProof{
-		Header: &HeaderMeta{
-			Number:    header.Number,
-			Hash:      header.Hash(),
-			StateRoot: header.Root,
-			Timestamp: header.Time,
-		},
-		Accounts: accounts,
-	}
-
-	return stateDiffProof, state.Error()
 }
 
 // GetProof returns the Merkle-proof for a given account and optionally some storage keys.
@@ -905,7 +849,7 @@ func DoCall(ctx context.Context, b Backend, args CallArgs, blockNrOrHash rpc.Blo
 		}
 	}
 	// Set default gas & gas price if none were set
-	gas := b.GasLimit()
+	gas := uint64(math.MaxUint64 / 2)
 	if args.Gas != nil {
 		gas = uint64(*args.Gas)
 	}

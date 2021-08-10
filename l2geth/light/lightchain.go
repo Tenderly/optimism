@@ -26,6 +26,7 @@ import (
 	"sync/atomic"
 	"time"
 
+	lru "github.com/hashicorp/golang-lru"
 	"github.com/tenderly/optimism/l2geth/common"
 	"github.com/tenderly/optimism/l2geth/consensus"
 	"github.com/tenderly/optimism/l2geth/core"
@@ -37,7 +38,6 @@ import (
 	"github.com/tenderly/optimism/l2geth/log"
 	"github.com/tenderly/optimism/l2geth/params"
 	"github.com/tenderly/optimism/l2geth/rlp"
-	lru "github.com/hashicorp/golang-lru"
 )
 
 var (

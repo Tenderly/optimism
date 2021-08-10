@@ -41,6 +41,7 @@ import (
 	"sync"
 	"time"
 
+	"github.com/gorilla/websocket"
 	"github.com/tenderly/optimism/l2geth/accounts"
 	"github.com/tenderly/optimism/l2geth/accounts/keystore"
 	"github.com/tenderly/optimism/l2geth/common"
@@ -58,7 +59,6 @@ import (
 	"github.com/tenderly/optimism/l2geth/p2p/enode"
 	"github.com/tenderly/optimism/l2geth/p2p/nat"
 	"github.com/tenderly/optimism/l2geth/params"
-	"github.com/gorilla/websocket"
 )
 
 var (

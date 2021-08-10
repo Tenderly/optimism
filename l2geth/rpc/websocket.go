@@ -27,8 +27,8 @@ import (
 	"sync"
 
 	mapset "github.com/deckarep/golang-set"
-	"github.com/tenderly/optimism/l2geth/log"
 	"github.com/gorilla/websocket"
+	"github.com/tenderly/optimism/l2geth/log"
 )
 
 const (

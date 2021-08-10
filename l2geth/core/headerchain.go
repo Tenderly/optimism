@@ -26,6 +26,7 @@ import (
 	"sync/atomic"
 	"time"
 
+	lru "github.com/hashicorp/golang-lru"
 	"github.com/tenderly/optimism/l2geth/common"
 	"github.com/tenderly/optimism/l2geth/consensus"
 	"github.com/tenderly/optimism/l2geth/core/rawdb"
@@ -33,7 +34,6 @@ import (
 	"github.com/tenderly/optimism/l2geth/ethdb"
 	"github.com/tenderly/optimism/l2geth/log"
 	"github.com/tenderly/optimism/l2geth/params"
-	lru "github.com/hashicorp/golang-lru"
 )
 
 const (

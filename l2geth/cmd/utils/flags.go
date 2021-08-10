@@ -32,6 +32,7 @@ import (
 	"text/template"
 	"time"
 
+	pcsclite "github.com/gballet/go-libpcsclite"
 	"github.com/tenderly/optimism/l2geth/accounts"
 	"github.com/tenderly/optimism/l2geth/accounts/keystore"
 	"github.com/tenderly/optimism/l2geth/common"
@@ -63,7 +64,6 @@ import (
 	"github.com/tenderly/optimism/l2geth/rollup"
 	"github.com/tenderly/optimism/l2geth/rpc"
 	whisper "github.com/tenderly/optimism/l2geth/whisper/whisperv6"
-	pcsclite "github.com/gballet/go-libpcsclite"
 	cli "gopkg.in/urfave/cli.v1"
 )
 
@@ -881,12 +881,6 @@ var (
 		Value:  eth.DefaultConfig.Rollup.StateDumpPath,
 		EnvVar: "ROLLUP_STATE_DUMP_PATH",
 	}
-	RollupDiffDbFlag = cli.Uint64Flag{
-		Name:   "rollup.diffdbcache",
-		Usage:  "Number of diffdb batch updates",
-		Value:  eth.DefaultConfig.DiffDbCache,
-		EnvVar: "ROLLUP_DIFFDB_CACHE",
-	}
 	RollupMaxCalldataSizeFlag = cli.IntFlag{
 		Name:   "rollup.maxcalldatasize",
 		Usage:  "Maximum allowed calldata size for Queue Origin Sequencer Txs",
@@ -1676,9 +1670,6 @@ func SetEthConfig(ctx *cli.Context, stack *node.Node, cfg *eth.Config) {
 	setEth1(ctx, &cfg.Rollup)
 	setRollup(ctx, &cfg.Rollup)
 
-	if ctx.GlobalIsSet(RollupDiffDbFlag.Name) {
-		cfg.DiffDbCache = ctx.GlobalUint64(RollupDiffDbFlag.Name)
-	}
 	if ctx.GlobalIsSet(SyncModeFlag.Name) {
 		cfg.SyncMode = *GlobalTextMarshaler(ctx, SyncModeFlag.Name).(*downloader.SyncMode)
 	}

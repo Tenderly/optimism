@@ -23,6 +23,7 @@ import (
 	"net"
 	"sync"
 
+	"github.com/gorilla/websocket"
 	"github.com/tenderly/optimism/l2geth/event"
 	"github.com/tenderly/optimism/l2geth/log"
 	"github.com/tenderly/optimism/l2geth/node"
@@ -30,7 +31,6 @@ import (
 	"github.com/tenderly/optimism/l2geth/p2p/enode"
 	"github.com/tenderly/optimism/l2geth/p2p/simulations/pipes"
 	"github.com/tenderly/optimism/l2geth/rpc"
-	"github.com/gorilla/websocket"
 )
 
 // SimAdapter is a NodeAdapter which creates in-memory simulation nodes and

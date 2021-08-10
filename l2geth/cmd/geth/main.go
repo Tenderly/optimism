@@ -18,29 +18,29 @@
 package main
 
 import (
-  "fmt"
-  "math"
-  "os"
-  godebug "runtime/debug"
-  "sort"
-  "strconv"
-  "strings"
-  "time"
+	"fmt"
+	"math"
+	"os"
+	godebug "runtime/debug"
+	"sort"
+	"strconv"
+	"strings"
+	"time"
 
-  "github.com/tenderly/optimism/l2geth/accounts"
-  "github.com/tenderly/optimism/l2geth/accounts/keystore"
-  "github.com/tenderly/optimism/l2geth/cmd/utils"
-  "github.com/tenderly/optimism/l2geth/common"
-  "github.com/tenderly/optimism/l2geth/console"
-  "github.com/tenderly/optimism/l2geth/eth"
-  "github.com/tenderly/optimism/l2geth/eth/downloader"
-  "github.com/tenderly/optimism/l2geth/ethclient"
-  "github.com/tenderly/optimism/l2geth/internal/debug"
-  "github.com/tenderly/optimism/l2geth/les"
-  "github.com/tenderly/optimism/l2geth/log"
-  "github.com/tenderly/optimism/l2geth/metrics"
-  "github.com/tenderly/optimism/l2geth/node"
-  cli "gopkg.in/urfave/cli.v1"
+	"github.com/tenderly/optimism/l2geth/accounts"
+	"github.com/tenderly/optimism/l2geth/accounts/keystore"
+	"github.com/tenderly/optimism/l2geth/cmd/utils"
+	"github.com/tenderly/optimism/l2geth/common"
+	"github.com/tenderly/optimism/l2geth/console"
+	"github.com/tenderly/optimism/l2geth/eth"
+	"github.com/tenderly/optimism/l2geth/eth/downloader"
+	"github.com/tenderly/optimism/l2geth/ethclient"
+	"github.com/tenderly/optimism/l2geth/internal/debug"
+	"github.com/tenderly/optimism/l2geth/les"
+	"github.com/tenderly/optimism/l2geth/log"
+	"github.com/tenderly/optimism/l2geth/metrics"
+	"github.com/tenderly/optimism/l2geth/node"
+	cli "gopkg.in/urfave/cli.v1"
 )
 
 const (
@@ -160,7 +160,6 @@ var (
 		utils.RollupTimstampRefreshFlag,
 		utils.RollupPollIntervalFlag,
 		utils.RollupStateDumpPathFlag,
-		utils.RollupDiffDbFlag,
 		utils.RollupMaxCalldataSizeFlag,
 		utils.RollupBackendFlag,
 		utils.RollupEnforceFeesFlag,

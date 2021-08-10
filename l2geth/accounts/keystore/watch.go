@@ -21,8 +21,8 @@ package keystore
 import (
 	"time"
 
-	"github.com/tenderly/optimism/l2geth/log"
 	"github.com/rjeczalik/notify"
+	"github.com/tenderly/optimism/l2geth/log"
 )
 
 type watcher struct {

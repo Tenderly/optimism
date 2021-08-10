@@ -28,7 +28,6 @@ import (
 	"github.com/tenderly/optimism/l2geth/core/state"
 	"github.com/tenderly/optimism/l2geth/core/types"
 	"github.com/tenderly/optimism/l2geth/core/vm"
-	"github.com/tenderly/optimism/l2geth/diffdb"
 	"github.com/tenderly/optimism/l2geth/eth/downloader"
 	"github.com/tenderly/optimism/l2geth/ethdb"
 	"github.com/tenderly/optimism/l2geth/event"
@@ -93,7 +92,6 @@ type Backend interface {
 	GetEthContext() (uint64, uint64)
 	GetRollupContext() (uint64, uint64, uint64)
 	GasLimit() uint64
-	GetDiff(*big.Int) (diffdb.Diff, error)
 	SuggestL1GasPrice(ctx context.Context) (*big.Int, error)
 	SetL1GasPrice(context.Context, *big.Int) error
 	SuggestL2GasPrice(context.Context) (*big.Int, error)

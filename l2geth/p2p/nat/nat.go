@@ -25,8 +25,8 @@ import (
 	"sync"
 	"time"
 
-	"github.com/tenderly/optimism/l2geth/log"
 	natpmp "github.com/jackpal/go-nat-pmp"
+	"github.com/tenderly/optimism/l2geth/log"
 )
 
 // An implementation of nat.Interface can map local ports to ports

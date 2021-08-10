@@ -28,6 +28,7 @@ import (
 	"testing"
 	"time"
 
+	"github.com/mattn/go-colorable"
 	"github.com/tenderly/optimism/l2geth/common"
 	"github.com/tenderly/optimism/l2geth/common/hexutil"
 	"github.com/tenderly/optimism/l2geth/consensus/ethash"
@@ -40,7 +41,6 @@ import (
 	"github.com/tenderly/optimism/l2geth/p2p/simulations"
 	"github.com/tenderly/optimism/l2geth/p2p/simulations/adapters"
 	"github.com/tenderly/optimism/l2geth/rpc"
-	"github.com/mattn/go-colorable"
 )
 
 // Additional command line flags for the test binary.

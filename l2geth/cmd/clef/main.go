@@ -35,6 +35,8 @@ import (
 	"strings"
 	"time"
 
+	colorable "github.com/mattn/go-colorable"
+	"github.com/mattn/go-isatty"
 	"github.com/tenderly/optimism/l2geth/accounts"
 	"github.com/tenderly/optimism/l2geth/accounts/keystore"
 	"github.com/tenderly/optimism/l2geth/cmd/utils"
@@ -53,8 +55,6 @@ import (
 	"github.com/tenderly/optimism/l2geth/signer/fourbyte"
 	"github.com/tenderly/optimism/l2geth/signer/rules"
 	"github.com/tenderly/optimism/l2geth/signer/storage"
-	colorable "github.com/mattn/go-colorable"
-	"github.com/mattn/go-isatty"
 	"gopkg.in/urfave/cli.v1"
 )
 

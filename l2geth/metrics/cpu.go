@@ -25,5 +25,5 @@ type CPUStats struct {
 
 // ReadCPUStats retrieves the current CPU stats.
 func ReadCPUStats(stats *CPUStats) {
-  // No-op
+	// No-op
 }

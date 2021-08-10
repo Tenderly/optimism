@@ -35,12 +35,12 @@ import (
 	"time"
 
 	"github.com/docker/docker/pkg/reexec"
+	"github.com/gorilla/websocket"
 	"github.com/tenderly/optimism/l2geth/log"
 	"github.com/tenderly/optimism/l2geth/node"
 	"github.com/tenderly/optimism/l2geth/p2p"
 	"github.com/tenderly/optimism/l2geth/p2p/enode"
 	"github.com/tenderly/optimism/l2geth/rpc"
-	"github.com/gorilla/websocket"
 )
 
 func init() {

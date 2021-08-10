@@ -35,12 +35,12 @@ import (
 	"sync"
 	"time"
 
+	"github.com/golang/snappy"
 	"github.com/tenderly/optimism/l2geth/common/bitutil"
 	"github.com/tenderly/optimism/l2geth/crypto"
 	"github.com/tenderly/optimism/l2geth/crypto/ecies"
 	"github.com/tenderly/optimism/l2geth/metrics"
 	"github.com/tenderly/optimism/l2geth/rlp"
-	"github.com/golang/snappy"
 	"golang.org/x/crypto/sha3"
 )
 

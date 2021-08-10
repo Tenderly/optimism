@@ -24,12 +24,12 @@ import (
 	"os"
 	"runtime"
 
-	"github.com/tenderly/optimism/l2geth/log"
-	"github.com/tenderly/optimism/l2geth/metrics"
-	"github.com/tenderly/optimism/l2geth/metrics/exp"
 	"github.com/fjl/memsize/memsizeui"
 	colorable "github.com/mattn/go-colorable"
 	"github.com/mattn/go-isatty"
+	"github.com/tenderly/optimism/l2geth/log"
+	"github.com/tenderly/optimism/l2geth/metrics"
+	"github.com/tenderly/optimism/l2geth/metrics/exp"
 	"gopkg.in/urfave/cli.v1"
 )
 

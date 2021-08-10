@@ -26,6 +26,7 @@ import (
 	"strconv"
 
 	"github.com/docker/docker/pkg/reexec"
+	"github.com/gorilla/websocket"
 	"github.com/tenderly/optimism/l2geth/crypto"
 	"github.com/tenderly/optimism/l2geth/log"
 	"github.com/tenderly/optimism/l2geth/node"
@@ -33,7 +34,6 @@ import (
 	"github.com/tenderly/optimism/l2geth/p2p/enode"
 	"github.com/tenderly/optimism/l2geth/p2p/enr"
 	"github.com/tenderly/optimism/l2geth/rpc"
-	"github.com/gorilla/websocket"
 )
 
 // Node represents a node in a simulation network which is created by a

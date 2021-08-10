@@ -31,7 +31,6 @@ import (
 	"github.com/tenderly/optimism/l2geth/core/state"
 	"github.com/tenderly/optimism/l2geth/core/types"
 	"github.com/tenderly/optimism/l2geth/core/vm"
-	"github.com/tenderly/optimism/l2geth/diffdb"
 	"github.com/tenderly/optimism/l2geth/eth/downloader"
 	"github.com/tenderly/optimism/l2geth/eth/gasprice"
 	"github.com/tenderly/optimism/l2geth/ethdb"
@@ -95,10 +94,6 @@ func (b *EthAPIBackend) ChainConfig() *params.ChainConfig {
 
 func (b *EthAPIBackend) CurrentBlock() *types.Block {
 	return b.eth.blockchain.CurrentBlock()
-}
-
-func (b *EthAPIBackend) GetDiff(block *big.Int) (diffdb.Diff, error) {
-	return b.eth.blockchain.GetDiff(block)
 }
 
 func (b *EthAPIBackend) SetHead(number uint64) {
