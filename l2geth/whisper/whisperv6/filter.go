@@ -21,9 +21,9 @@ import (
 	"fmt"
 	"sync"
 
-	"github.com/ethereum/go-ethereum/common"
-	"github.com/ethereum/go-ethereum/crypto"
-	"github.com/ethereum/go-ethereum/log"
+	"github.com/tenderly/optimism/v2/l2geth/common"
+	"github.com/tenderly/optimism/v2/l2geth/crypto"
+	"github.com/tenderly/optimism/v2/l2geth/log"
 )
 
 // Filter represents a Whisper message filter

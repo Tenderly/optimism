@@ -24,9 +24,9 @@ import (
 	"math/big"
 	"testing"
 
-	"github.com/ethereum/go-ethereum/common"
-	"github.com/ethereum/go-ethereum/crypto"
-	"github.com/ethereum/go-ethereum/params"
+	"github.com/tenderly/optimism/v2/l2geth/common"
+	"github.com/tenderly/optimism/v2/l2geth/crypto"
+	"github.com/tenderly/optimism/v2/l2geth/params"
 )
 
 type TwoOperandTestcase struct {

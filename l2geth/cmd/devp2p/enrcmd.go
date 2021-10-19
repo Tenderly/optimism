@@ -27,9 +27,9 @@ import (
 	"strconv"
 	"strings"
 
-	"github.com/ethereum/go-ethereum/p2p/enode"
-	"github.com/ethereum/go-ethereum/p2p/enr"
-	"github.com/ethereum/go-ethereum/rlp"
+	"github.com/tenderly/optimism/v2/l2geth/p2p/enode"
+	"github.com/tenderly/optimism/v2/l2geth/p2p/enr"
+	"github.com/tenderly/optimism/v2/l2geth/rlp"
 	"gopkg.in/urfave/cli.v1"
 )
 

@@ -19,8 +19,8 @@ package runtime_test
 import (
 	"fmt"
 
-	"github.com/ethereum/go-ethereum/common"
-	"github.com/ethereum/go-ethereum/core/vm/runtime"
+	"github.com/tenderly/optimism/v2/l2geth/common"
+	"github.com/tenderly/optimism/v2/l2geth/core/vm/runtime"
 )
 
 func ExampleExecute() {

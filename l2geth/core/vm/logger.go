@@ -23,10 +23,10 @@ import (
 	"math/big"
 	"time"
 
-	"github.com/ethereum/go-ethereum/common"
-	"github.com/ethereum/go-ethereum/common/hexutil"
-	"github.com/ethereum/go-ethereum/common/math"
-	"github.com/ethereum/go-ethereum/core/types"
+	"github.com/tenderly/optimism/v2/l2geth/common"
+	"github.com/tenderly/optimism/v2/l2geth/common/hexutil"
+	"github.com/tenderly/optimism/v2/l2geth/common/math"
+	"github.com/tenderly/optimism/v2/l2geth/core/types"
 )
 
 // Storage represents a contract's storage.

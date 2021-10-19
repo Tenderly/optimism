@@ -20,12 +20,12 @@ import (
 	"fmt"
 	"math/big"
 
-	"github.com/ethereum/go-ethereum/consensus/ethash"
-	"github.com/ethereum/go-ethereum/core/rawdb"
-	"github.com/ethereum/go-ethereum/core/types"
-	"github.com/ethereum/go-ethereum/core/vm"
-	"github.com/ethereum/go-ethereum/crypto"
-	"github.com/ethereum/go-ethereum/params"
+	"github.com/tenderly/optimism/v2/l2geth/consensus/ethash"
+	"github.com/tenderly/optimism/v2/l2geth/core/rawdb"
+	"github.com/tenderly/optimism/v2/l2geth/core/types"
+	"github.com/tenderly/optimism/v2/l2geth/core/vm"
+	"github.com/tenderly/optimism/v2/l2geth/crypto"
+	"github.com/tenderly/optimism/v2/l2geth/params"
 )
 
 func ExampleGenerateChain() {

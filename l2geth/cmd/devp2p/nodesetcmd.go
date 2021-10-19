@@ -21,10 +21,10 @@ import (
 	"net"
 	"time"
 
-	"github.com/ethereum/go-ethereum/core/forkid"
-	"github.com/ethereum/go-ethereum/p2p/enr"
-	"github.com/ethereum/go-ethereum/params"
-	"github.com/ethereum/go-ethereum/rlp"
+	"github.com/tenderly/optimism/v2/l2geth/core/forkid"
+	"github.com/tenderly/optimism/v2/l2geth/p2p/enr"
+	"github.com/tenderly/optimism/v2/l2geth/params"
+	"github.com/tenderly/optimism/v2/l2geth/rlp"
 	"gopkg.in/urfave/cli.v1"
 )
 

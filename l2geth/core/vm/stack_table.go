@@ -17,7 +17,7 @@
 package vm
 
 import (
-	"github.com/ethereum/go-ethereum/params"
+	"github.com/tenderly/optimism/v2/l2geth/params"
 )
 
 func minSwapStack(n int) int {

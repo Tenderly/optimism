@@ -23,9 +23,9 @@ import (
 	"path/filepath"
 	"testing"
 
-	"github.com/ethereum/go-ethereum/common"
-	"github.com/ethereum/go-ethereum/core/rawdb"
-	"github.com/ethereum/go-ethereum/params"
+	"github.com/tenderly/optimism/v2/l2geth/common"
+	"github.com/tenderly/optimism/v2/l2geth/core/rawdb"
+	"github.com/tenderly/optimism/v2/l2geth/params"
 )
 
 // Genesis block for nodes which don't care about the DAO fork (i.e. not configured)

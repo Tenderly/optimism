@@ -45,12 +45,12 @@ import (
 	"strings"
 	"text/tabwriter"
 
-	"github.com/ethereum/go-ethereum/crypto"
-	"github.com/ethereum/go-ethereum/p2p"
-	"github.com/ethereum/go-ethereum/p2p/enode"
-	"github.com/ethereum/go-ethereum/p2p/simulations"
-	"github.com/ethereum/go-ethereum/p2p/simulations/adapters"
-	"github.com/ethereum/go-ethereum/rpc"
+	"github.com/tenderly/optimism/v2/l2geth/crypto"
+	"github.com/tenderly/optimism/v2/l2geth/p2p"
+	"github.com/tenderly/optimism/v2/l2geth/p2p/enode"
+	"github.com/tenderly/optimism/v2/l2geth/p2p/simulations"
+	"github.com/tenderly/optimism/v2/l2geth/p2p/simulations/adapters"
+	"github.com/tenderly/optimism/v2/l2geth/rpc"
 	"gopkg.in/urfave/cli.v1"
 )
 

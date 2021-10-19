@@ -25,12 +25,12 @@ import (
 	"regexp"
 	"strings"
 
-	"github.com/ethereum/go-ethereum/accounts/abi"
-	"github.com/ethereum/go-ethereum/accounts/abi/bind"
-	"github.com/ethereum/go-ethereum/cmd/utils"
-	"github.com/ethereum/go-ethereum/common/compiler"
-	"github.com/ethereum/go-ethereum/crypto"
-	"github.com/ethereum/go-ethereum/log"
+	"github.com/tenderly/optimism/v2/l2geth/accounts/abi"
+	"github.com/tenderly/optimism/v2/l2geth/accounts/abi/bind"
+	"github.com/tenderly/optimism/v2/l2geth/cmd/utils"
+	"github.com/tenderly/optimism/v2/l2geth/common/compiler"
+	"github.com/tenderly/optimism/v2/l2geth/crypto"
+	"github.com/tenderly/optimism/v2/l2geth/log"
 	"gopkg.in/urfave/cli.v1"
 )
 
