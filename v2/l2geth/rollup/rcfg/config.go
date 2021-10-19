@@ -1,14 +1,13 @@
 package rcfg
 
 import (
-	"math/big"
-	"os"
+  "math/big"
 
-	"github.com/tenderly/optimism/v2/l2geth/common"
+  "github.com/tenderly/optimism/v2/l2geth/common"
 )
 
 // UsingOVM is used to enable or disable functionality necessary for the OVM.
-var UsingOVM bool
+const UsingOVM = true
 
 var (
 	// l2GasPriceSlot refers to the storage slot that the L2 gas price is stored
@@ -35,7 +34,3 @@ var (
 	// holds the number of decimals in the fee scalar
 	DecimalsSlot = common.BigToHash(big.NewInt(5))
 )
-
-func init() {
-	UsingOVM = os.Getenv("USING_OVM") == "true"
-}
