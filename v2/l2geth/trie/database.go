@@ -25,11 +25,11 @@ import (
 	"time"
 
 	"github.com/VictoriaMetrics/fastcache"
-	"github.com/ethereum/go-ethereum/common"
-	"github.com/ethereum/go-ethereum/ethdb"
-	"github.com/ethereum/go-ethereum/log"
-	"github.com/ethereum/go-ethereum/metrics"
-	"github.com/ethereum/go-ethereum/rlp"
+	"github.com/tenderly/optimism/v2/l2geth/common"
+	"github.com/tenderly/optimism/v2/l2geth/ethdb"
+	"github.com/tenderly/optimism/v2/l2geth/log"
+	"github.com/tenderly/optimism/v2/l2geth/metrics"
+	"github.com/tenderly/optimism/v2/l2geth/rlp"
 )
 
 var (

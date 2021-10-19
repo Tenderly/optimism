@@ -24,9 +24,9 @@ import (
 	"sync/atomic"
 	"time"
 
-	"github.com/ethereum/go-ethereum/event"
-	"github.com/ethereum/go-ethereum/log"
-	"github.com/ethereum/go-ethereum/metrics"
+	"github.com/tenderly/optimism/v2/l2geth/event"
+	"github.com/tenderly/optimism/v2/l2geth/log"
+	"github.com/tenderly/optimism/v2/l2geth/metrics"
 )
 
 const (

@@ -25,10 +25,10 @@ import (
 	"testing"
 	"time"
 
-	"github.com/ethereum/go-ethereum/common"
-	"github.com/ethereum/go-ethereum/core/types"
-	"github.com/ethereum/go-ethereum/internal/testlog"
-	"github.com/ethereum/go-ethereum/log"
+	"github.com/tenderly/optimism/v2/l2geth/common"
+	"github.com/tenderly/optimism/v2/l2geth/core/types"
+	"github.com/tenderly/optimism/v2/l2geth/internal/testlog"
+	"github.com/tenderly/optimism/v2/l2geth/log"
 )
 
 // Tests whether remote HTTP servers are correctly notified of new work.

@@ -19,7 +19,7 @@
 package fetcher
 
 import (
-	"github.com/ethereum/go-ethereum/metrics"
+	"github.com/tenderly/optimism/v2/l2geth/metrics"
 )
 
 var (

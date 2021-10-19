@@ -21,12 +21,12 @@ import (
 	"strings"
 	"testing"
 
-	"github.com/ethereum/go-ethereum/accounts/abi"
-	"github.com/ethereum/go-ethereum/common"
-	"github.com/ethereum/go-ethereum/core/rawdb"
-	"github.com/ethereum/go-ethereum/core/state"
-	"github.com/ethereum/go-ethereum/core/vm"
-	"github.com/ethereum/go-ethereum/params"
+	"github.com/tenderly/optimism/v2/l2geth/accounts/abi"
+	"github.com/tenderly/optimism/v2/l2geth/common"
+	"github.com/tenderly/optimism/v2/l2geth/core/rawdb"
+	"github.com/tenderly/optimism/v2/l2geth/core/state"
+	"github.com/tenderly/optimism/v2/l2geth/core/vm"
+	"github.com/tenderly/optimism/v2/l2geth/params"
 )
 
 func TestDefaults(t *testing.T) {

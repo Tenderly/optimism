@@ -21,14 +21,14 @@ import (
 	"sync"
 	"time"
 
-	"github.com/ethereum/go-ethereum/common"
-	"github.com/ethereum/go-ethereum/common/mclock"
-	"github.com/ethereum/go-ethereum/core/types"
-	"github.com/ethereum/go-ethereum/eth/downloader"
-	"github.com/ethereum/go-ethereum/light"
-	"github.com/ethereum/go-ethereum/log"
-	"github.com/ethereum/go-ethereum/p2p"
-	"github.com/ethereum/go-ethereum/params"
+	"github.com/tenderly/optimism/v2/l2geth/common"
+	"github.com/tenderly/optimism/v2/l2geth/common/mclock"
+	"github.com/tenderly/optimism/v2/l2geth/core/types"
+	"github.com/tenderly/optimism/v2/l2geth/eth/downloader"
+	"github.com/tenderly/optimism/v2/l2geth/light"
+	"github.com/tenderly/optimism/v2/l2geth/log"
+	"github.com/tenderly/optimism/v2/l2geth/p2p"
+	"github.com/tenderly/optimism/v2/l2geth/params"
 )
 
 // clientHandler is responsible for receiving and processing all incoming server

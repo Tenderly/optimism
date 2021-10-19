@@ -1,4 +1,4 @@
-module github.com/ethereum/go-ethereum
+module github.com/tenderly/optimism/v2/l2geth
 
 go 1.15
 

@@ -22,7 +22,7 @@ import (
 	"errors"
 	"math/big"
 
-	"github.com/ethereum/go-ethereum/common"
+	"github.com/tenderly/optimism/v2/l2geth/common"
 )
 
 // Interface represents a wrapped version of Go's interface{}, with the capacity

@@ -23,13 +23,13 @@ import (
 	"testing"
 
 	"github.com/davecgh/go-spew/spew"
-	"github.com/ethereum/go-ethereum/consensus/ethash"
-	"github.com/ethereum/go-ethereum/core"
-	"github.com/ethereum/go-ethereum/core/rawdb"
-	"github.com/ethereum/go-ethereum/core/state"
-	"github.com/ethereum/go-ethereum/core/vm"
-	"github.com/ethereum/go-ethereum/params"
-	"github.com/ethereum/go-ethereum/trie"
+	"github.com/tenderly/optimism/v2/l2geth/consensus/ethash"
+	"github.com/tenderly/optimism/v2/l2geth/core"
+	"github.com/tenderly/optimism/v2/l2geth/core/rawdb"
+	"github.com/tenderly/optimism/v2/l2geth/core/state"
+	"github.com/tenderly/optimism/v2/l2geth/core/vm"
+	"github.com/tenderly/optimism/v2/l2geth/params"
+	"github.com/tenderly/optimism/v2/l2geth/trie"
 )
 
 func TestNodeIterator(t *testing.T) {

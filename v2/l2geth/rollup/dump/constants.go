@@ -1,7 +1,7 @@
 package dump
 
 import (
-	"github.com/ethereum/go-ethereum/common"
+	"github.com/tenderly/optimism/v2/l2geth/common"
 )
 
 var OvmEthAddress = common.HexToAddress("0xDeadDeAddeAddEAddeadDEaDDEAdDeaDDeAD0000")

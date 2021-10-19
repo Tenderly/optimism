@@ -23,11 +23,11 @@ import (
 	"os"
 	"time"
 
-	"github.com/ethereum/go-ethereum/common"
-	"github.com/ethereum/go-ethereum/ethdb"
-	"github.com/ethereum/go-ethereum/ethdb/leveldb"
-	"github.com/ethereum/go-ethereum/ethdb/memorydb"
-	"github.com/ethereum/go-ethereum/log"
+	"github.com/tenderly/optimism/v2/l2geth/common"
+	"github.com/tenderly/optimism/v2/l2geth/ethdb"
+	"github.com/tenderly/optimism/v2/l2geth/ethdb/leveldb"
+	"github.com/tenderly/optimism/v2/l2geth/ethdb/memorydb"
+	"github.com/tenderly/optimism/v2/l2geth/log"
 	"github.com/olekukonko/tablewriter"
 )
 

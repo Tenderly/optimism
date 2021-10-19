@@ -19,7 +19,7 @@ package bloombits
 import (
 	"errors"
 
-	"github.com/ethereum/go-ethereum/core/types"
+	"github.com/tenderly/optimism/v2/l2geth/core/types"
 )
 
 var (

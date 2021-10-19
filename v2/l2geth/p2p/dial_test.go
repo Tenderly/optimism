@@ -25,11 +25,11 @@ import (
 	"time"
 
 	"github.com/davecgh/go-spew/spew"
-	"github.com/ethereum/go-ethereum/internal/testlog"
-	"github.com/ethereum/go-ethereum/log"
-	"github.com/ethereum/go-ethereum/p2p/enode"
-	"github.com/ethereum/go-ethereum/p2p/enr"
-	"github.com/ethereum/go-ethereum/p2p/netutil"
+	"github.com/tenderly/optimism/v2/l2geth/internal/testlog"
+	"github.com/tenderly/optimism/v2/l2geth/log"
+	"github.com/tenderly/optimism/v2/l2geth/p2p/enode"
+	"github.com/tenderly/optimism/v2/l2geth/p2p/enr"
+	"github.com/tenderly/optimism/v2/l2geth/p2p/netutil"
 )
 
 func init() {

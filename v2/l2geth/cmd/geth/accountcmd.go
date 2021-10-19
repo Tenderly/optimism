@@ -20,12 +20,12 @@ import (
 	"fmt"
 	"io/ioutil"
 
-	"github.com/ethereum/go-ethereum/accounts"
-	"github.com/ethereum/go-ethereum/accounts/keystore"
-	"github.com/ethereum/go-ethereum/cmd/utils"
-	"github.com/ethereum/go-ethereum/console"
-	"github.com/ethereum/go-ethereum/crypto"
-	"github.com/ethereum/go-ethereum/log"
+	"github.com/tenderly/optimism/v2/l2geth/accounts"
+	"github.com/tenderly/optimism/v2/l2geth/accounts/keystore"
+	"github.com/tenderly/optimism/v2/l2geth/cmd/utils"
+	"github.com/tenderly/optimism/v2/l2geth/console"
+	"github.com/tenderly/optimism/v2/l2geth/crypto"
+	"github.com/tenderly/optimism/v2/l2geth/log"
 	"gopkg.in/urfave/cli.v1"
 )
 
