@@ -17,20 +17,20 @@
 package tracers
 
 import (
-  "encoding/json"
-  "errors"
-  "fmt"
-  "math/big"
-  "sync/atomic"
-  "time"
-  "unsafe"
+	"encoding/json"
+	"errors"
+	"fmt"
+	"math/big"
+	"sync/atomic"
+	"time"
+	"unsafe"
 
-  "github.com/tenderly/optimism/v2/l2geth/common"
-  "github.com/tenderly/optimism/v2/l2geth/common/hexutil"
-  "github.com/tenderly/optimism/v2/l2geth/core/vm"
-  "github.com/tenderly/optimism/v2/l2geth/crypto"
-  "github.com/tenderly/optimism/v2/l2geth/log"
-  "gopkg.in/olebedev/go-duktape.v3"
+	"github.com/tenderly/optimism/v2/l2geth/common"
+	"github.com/tenderly/optimism/v2/l2geth/common/hexutil"
+	"github.com/tenderly/optimism/v2/l2geth/core/vm"
+	"github.com/tenderly/optimism/v2/l2geth/crypto"
+	"github.com/tenderly/optimism/v2/l2geth/log"
+	duktape "gopkg.in/olebedev/go-duktape.v3"
 )
 
 // bigIntegerJS is the minified version of https://github.com/peterolson/BigInteger.js.
@@ -532,7 +532,7 @@ func (jst *Tracer) CaptureStart(from common.Address, to common.Address, create b
 }
 
 // CaptureState implements the Tracer interface to trace a single step of VM execution.
-func (jst *Tracer) CaptureState(env *vm.EVM, pc uint64, op vm.OpCode, gas, cost uint64, memory *vm.Memory, stack *vm.Stack, contract *vm.Contract, rData []byte, depth int, err error) error {
+func (jst *Tracer) CaptureState(env *vm.EVM, pc uint64, op vm.OpCode, gas, cost uint64, memory *vm.Memory, stack *vm.Stack, contract *vm.Contract, depth int, err error) error {
 	if jst.err == nil {
 		// Initialize the context if it wasn't done yet
 		if !jst.inited {

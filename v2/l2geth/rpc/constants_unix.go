@@ -14,12 +14,20 @@
 // You should have received a copy of the GNU Lesser General Public License
 // along with the go-ethereum library. If not, see <http://www.gnu.org/licenses/>.
 
-// +build !cgo,!windows
+// +build darwin dragonfly freebsd linux nacl netbsd openbsd solaris
 
 package rpc
 
+/*
+#include <sys/un.h>
+
+int max_socket_path_size() {
+struct sockaddr_un s;
+return sizeof(s.sun_path);
+}
+*/
+import "C"
+
 var (
-	//  On Linux, sun_path is 108 bytes in size
-	// see http://man7.org/linux/man-pages/man7/unix.7.html
-	max_path_size = 108
+	max_path_size = C.max_socket_path_size()
 )
