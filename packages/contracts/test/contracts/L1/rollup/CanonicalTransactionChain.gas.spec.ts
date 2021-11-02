@@ -103,11 +103,6 @@ describe('[GAS BENCHMARK] CanonicalTransactionChain', () => {
     )
 
     await AddressManager.setAddress(
-      'ChainStorageContainer-CTC-queue',
-      queue.address
-    )
-
-    await AddressManager.setAddress(
       'CanonicalTransactionChain',
       CanonicalTransactionChain.address
     )
@@ -157,7 +152,7 @@ describe('[GAS BENCHMARK] CanonicalTransactionChain', () => {
         'Non-calldata overhead gas cost per transaction:',
         (gasUsed - fixedCalldataCost) / numTxs
       )
-      expectApprox(gasUsed, 1_422_181, {
+      expectApprox(gasUsed, 1_402_638, {
         absoluteUpperDeviation: 1000,
         // Assert a lower bound of 1% reduction on gas cost. If your tests are breaking because your
         // contracts are too efficient, consider updating the target value!
@@ -293,7 +288,7 @@ describe('[GAS BENCHMARK] CanonicalTransactionChain', () => {
 
       console.log('Benchmark complete.')
 
-      expectApprox(gasUsed, 189_487, {
+      expectApprox(gasUsed, 196_687, {
         absoluteUpperDeviation: 500,
         // Assert a lower bound of 1% reduction on gas cost. If your tests are breaking because your
         // contracts are too efficient, consider updating the target value!
@@ -314,7 +309,7 @@ describe('[GAS BENCHMARK] CanonicalTransactionChain', () => {
 
       console.log('Benchmark complete.')
 
-      expectApprox(gasUsed, 127_500, {
+      expectApprox(gasUsed, 134_100, {
         absoluteUpperDeviation: 500,
         // Assert a lower bound of 1% reduction on gas cost. If your tests are breaking because your
         // contracts are too efficient, consider updating the target value!

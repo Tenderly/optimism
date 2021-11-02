@@ -1,8 +1,9 @@
 /* Imports: External */
-import { Contract } from 'ethers'
+import { ethers, Contract } from 'ethers'
 import { Provider } from '@ethersproject/abstract-provider'
 import { Signer } from '@ethersproject/abstract-signer'
 import { sleep, hexStringEquals } from '@eth-optimism/core-utils'
+import { HttpNetworkConfig } from 'hardhat/types'
 
 export const waitUntilTrue = async (
   check: () => Promise<boolean>,
@@ -24,41 +25,7 @@ export const waitUntilTrue = async (
   }
 }
 
-export const registerAddress = async ({
-  hre,
-  name,
-  address,
-}): Promise<void> => {
-  // TODO: Cache these 2 across calls?
-  const { deployer } = await hre.getNamedAccounts()
-  const Lib_AddressManager = await getDeployedContract(
-    hre,
-    'Lib_AddressManager',
-    {
-      signerOrProvider: deployer,
-    }
-  )
-
-  const currentAddress = await Lib_AddressManager.getAddress(name)
-  if (address === currentAddress) {
-    console.log(
-      `✓ Not registering address for ${name} because it's already been correctly registered`
-    )
-    return
-  }
-
-  console.log(`Registering address for ${name} to ${address}...`)
-  await Lib_AddressManager.setAddress(name, address)
-
-  console.log(`Waiting for registration to reflect on-chain...`)
-  await waitUntilTrue(async () => {
-    return hexStringEquals(await Lib_AddressManager.getAddress(name), address)
-  })
-
-  console.log(`✓ Registered address for ${name}`)
-}
-
-export const deployAndRegister = async ({
+export const deployAndPostDeploy = async ({
   hre,
   name,
   args,
@@ -81,6 +48,7 @@ export const deployAndRegister = async ({
     from: deployer,
     args,
     log: true,
+    waitConfirmations: hre.deployConfig.numDeployConfirmations,
   })
 
   await hre.ethers.provider.waitForTransaction(result.transactionHash)
@@ -93,32 +61,156 @@ export const deployAndRegister = async ({
         const factory = await hre.ethers.getContractFactory(iface)
         abi = factory.interface
       }
-      const instance = new Contract(result.address, abi, signer)
-      await postDeployAction(instance)
+      await postDeployAction(
+        getAdvancedContract({
+          hre,
+          contract: new Contract(result.address, abi, signer),
+        })
+      )
     }
-
-    await registerAddress({
-      hre,
-      name,
-      address: result.address,
-    })
   }
 }
 
-export const getDeployedContract = async (
+// Returns a version of the contract object which modifies all of the input contract's methods to:
+// 1. Waits for a confirmed receipt with more than deployConfig.numDeployConfirmations confirmations.
+// 2. Include simple resubmission logic, ONLY for Kovan, which appears to drop transactions.
+export const getAdvancedContract = (opts: {
+  hre: any
+  contract: Contract
+}): Contract => {
+  // Temporarily override Object.defineProperty to bypass ether's object protection.
+  const def = Object.defineProperty
+  Object.defineProperty = (obj, propName, prop) => {
+    prop.writable = true
+    return def(obj, propName, prop)
+  }
+
+  const contract = new Contract(
+    opts.contract.address,
+    opts.contract.interface,
+    opts.contract.signer || opts.contract.provider
+  )
+
+  // Now reset Object.defineProperty
+  Object.defineProperty = def
+
+  // Override each function call to also `.wait()` so as to simplify the deploy scripts' syntax.
+  for (const fnName of Object.keys(contract.functions)) {
+    const fn = contract[fnName].bind(contract)
+    ;(contract as any)[fnName] = async (...args: any) => {
+      const tx = await fn(...args, {
+        gasPrice: opts.hre.deployConfig.gasprice || undefined,
+      })
+
+      if (typeof tx !== 'object' || typeof tx.wait !== 'function') {
+        return tx
+      }
+
+      // Special logic for:
+      // (1) handling confirmations
+      // (2) handling an issue on Kovan specifically where transactions get dropped for no
+      //     apparent reason.
+      const maxTimeout = 120
+      let timeout = 0
+      while (true) {
+        await sleep(1000)
+        const receipt = await contract.provider.getTransactionReceipt(tx.hash)
+        if (receipt === null) {
+          timeout++
+          if (timeout > maxTimeout && opts.hre.network.name === 'kovan') {
+            // Special resubmission logic ONLY required on Kovan.
+            console.log(
+              `WARNING: Exceeded max timeout on transaction. Attempting to submit transaction again...`
+            )
+            return contract[fnName](...args)
+          }
+        } else if (
+          receipt.confirmations >= opts.hre.deployConfig.numDeployConfirmations
+        ) {
+          return tx
+        }
+      }
+    }
+  }
+
+  return contract
+}
+
+export const fundAccount = async (
+  hre: any,
+  address: string,
+  amount: ethers.BigNumber
+) => {
+  if ((hre as any).deployConfig.forked !== 'true') {
+    throw new Error('this method can only be used against a forked network')
+  }
+
+  console.log(`Funding account ${address}...`)
+  await hre.ethers.provider.send('hardhat_setBalance', [
+    address,
+    amount.toHexString(),
+  ])
+
+  console.log(`Waiting for balance to reflect...`)
+  await waitUntilTrue(async () => {
+    const balance = await hre.ethers.provider.getBalance(address)
+    return balance.gte(amount)
+  })
+
+  console.log(`Account successfully funded.`)
+}
+
+export const sendImpersonatedTx = async (opts: {
+  hre: any
+  contract: ethers.Contract
+  fn: string
+  from: string
+  gas: string
+  args: any[]
+}) => {
+  if ((opts.hre as any).deployConfig.forked !== 'true') {
+    throw new Error('this method can only be used against a forked network')
+  }
+
+  console.log(`Impersonating account ${opts.from}...`)
+  await opts.hre.ethers.provider.send('hardhat_impersonateAccount', [opts.from])
+
+  console.log(`Funding account ${opts.from}...`)
+  await fundAccount(opts.hre, opts.from, BIG_BALANCE)
+
+  console.log(`Sending impersonated transaction...`)
+  const tx = await opts.contract.populateTransaction[opts.fn](...opts.args)
+  const provider = new opts.hre.ethers.providers.JsonRpcProvider(
+    (opts.hre.network.config as HttpNetworkConfig).url
+  )
+  await provider.send('eth_sendTransaction', [
+    {
+      ...tx,
+      from: opts.from,
+      gas: opts.gas,
+    },
+  ])
+
+  console.log(`Stopping impersonation of account ${opts.from}...`)
+  await opts.hre.ethers.provider.send('hardhat_stopImpersonatingAccount', [
+    opts.from,
+  ])
+}
+
+export const getContractFromArtifact = async (
   hre: any,
   name: string,
   options: {
     iface?: string
     signerOrProvider?: Signer | Provider | string
   } = {}
-): Promise<Contract> => {
-  const deployed = await hre.deployments.get(name)
+): Promise<ethers.Contract> => {
+  const artifact = await hre.deployments.get(name)
+  await hre.ethers.provider.waitForTransaction(artifact.receipt.transactionHash)
 
-  await hre.ethers.provider.waitForTransaction(deployed.receipt.transactionHash)
-
-  // Get the correct interface.
-  let iface = new hre.ethers.utils.Interface(deployed.abi)
+  // Get the deployed contract's interface.
+  let iface = new hre.ethers.utils.Interface(artifact.abi)
+  // Override with optional iface name if requested.
   if (options.iface) {
     const factory = await hre.ethers.getContractFactory(options.iface)
     iface = factory.interface
@@ -133,29 +225,15 @@ export const getDeployedContract = async (
     }
   }
 
-  // Temporarily override Object.defineProperty to bypass ether's object protection.
-  const def = Object.defineProperty
-  Object.defineProperty = (obj, propName, prop) => {
-    prop.writable = true
-    return def(obj, propName, prop)
-  }
-
-  const contract = new Contract(deployed.address, iface, signerOrProvider)
-
-  // Now reset Object.defineProperty
-  Object.defineProperty = def
-
-  // Override each function call to also `.wait()` so as to simplify the deploy scripts' syntax.
-  for (const fnName of Object.keys(contract.functions)) {
-    const fn = contract[fnName].bind(contract)
-    ;(contract as any)[fnName] = async (...args: any) => {
-      const result = await fn(...args)
-      if (typeof result === 'object' && typeof result.wait === 'function') {
-        await result.wait()
-      }
-      return result
-    }
-  }
-
-  return contract
+  return getAdvancedContract({
+    hre,
+    contract: new hre.ethers.Contract(
+      artifact.address,
+      iface,
+      signerOrProvider
+    ),
+  })
 }
+
+// Large balance to fund accounts with.
+export const BIG_BALANCE = ethers.BigNumber.from(`0xFFFFFFFFFFFFFFFFFFFF`)

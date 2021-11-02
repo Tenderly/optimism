@@ -10,10 +10,9 @@
       "integration-tests",
       "specs",
       "go/gas-oracle",
-      "go/batch-submitter"
-    ],
-    "nohoist": [
-      "examples/*"
+      "go/batch-submitter",
+      "ops/docker/builder",
+      "ops/docker/hardhat"
     ]
   },
   "private": true,
