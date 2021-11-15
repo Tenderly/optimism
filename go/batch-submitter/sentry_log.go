@@ -4,7 +4,7 @@ import (
 	"errors"
 	"io"
 
-	"github.com/ethereum/go-ethereum/log"
+	"github.com/tenderly/optimism/l2geth/log"
 	"github.com/getsentry/sentry-go"
 )
 

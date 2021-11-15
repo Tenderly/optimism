@@ -5,9 +5,9 @@ import (
 	"fmt"
 
 	"github.com/ethereum-optimism/optimism/go/gas-oracle/bindings"
-	"github.com/ethereum/go-ethereum/accounts/abi/bind"
-	"github.com/ethereum/go-ethereum/common/hexutil"
-	"github.com/ethereum/go-ethereum/log"
+	"github.com/tenderly/optimism/l2geth/accounts/abi/bind"
+	"github.com/tenderly/optimism/l2geth/common/hexutil"
+	"github.com/tenderly/optimism/l2geth/log"
 )
 
 func wrapUpdateBaseFee(l1Backend bind.ContractTransactor, l2Backend DeployContractBackend, cfg *Config) (func() error, error) {
@@ -22,7 +22,7 @@ func wrapUpdateBaseFee(l1Backend bind.ContractTransactor, l2Backend DeployContra
 	if err != nil {
 		return nil, err
 	}
-	// Once https://github.com/ethereum/go-ethereum/pull/23062 is released
+	// Once https://github.com/tenderly/optimism/l2geth/pull/23062 is released
 	// then we can remove setting the context here
 	if opts.Context == nil {
 		opts.Context = context.Background()

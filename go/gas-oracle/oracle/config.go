@@ -7,9 +7,9 @@ import (
 	"strings"
 
 	"github.com/ethereum-optimism/optimism/go/gas-oracle/flags"
-	"github.com/ethereum/go-ethereum/common"
-	"github.com/ethereum/go-ethereum/crypto"
-	"github.com/ethereum/go-ethereum/log"
+	"github.com/tenderly/optimism/l2geth/common"
+	"github.com/tenderly/optimism/l2geth/crypto"
+	"github.com/tenderly/optimism/l2geth/log"
 	"github.com/urfave/cli"
 )
 

@@ -5,9 +5,9 @@ import (
 	"testing"
 
 	"github.com/ethereum-optimism/optimism/go/gas-oracle/bindings"
-	"github.com/ethereum/go-ethereum/accounts/abi/bind"
-	"github.com/ethereum/go-ethereum/common"
-	"github.com/ethereum/go-ethereum/crypto"
+	"github.com/tenderly/optimism/l2geth/accounts/abi/bind"
+	"github.com/tenderly/optimism/l2geth/common"
+	"github.com/tenderly/optimism/l2geth/crypto"
 )
 
 func TestBaseFeeUpdate(t *testing.T) {

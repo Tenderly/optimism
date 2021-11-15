@@ -7,8 +7,8 @@ import (
 	"testing"
 
 	batchsubmitter "github.com/ethereum-optimism/go/batch-submitter"
-	"github.com/ethereum/go-ethereum/common"
-	"github.com/ethereum/go-ethereum/crypto"
+	"github.com/tenderly/optimism/l2geth/common"
+	"github.com/tenderly/optimism/l2geth/crypto"
 	"github.com/stretchr/testify/require"
 )
 

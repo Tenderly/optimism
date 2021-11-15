@@ -5,7 +5,7 @@ import (
 	"math/big"
 	"testing"
 
-	"github.com/ethereum/go-ethereum/common"
+	"github.com/tenderly/optimism/l2geth/common"
 )
 
 func TestPaysEnough(t *testing.T) {

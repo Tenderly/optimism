@@ -7,9 +7,9 @@ import (
 	"strings"
 
 	"github.com/decred/dcrd/hdkeychain/v3"
-	"github.com/ethereum/go-ethereum/accounts"
-	"github.com/ethereum/go-ethereum/common"
-	"github.com/ethereum/go-ethereum/crypto"
+	"github.com/tenderly/optimism/l2geth/accounts"
+	"github.com/tenderly/optimism/l2geth/common"
+	"github.com/tenderly/optimism/l2geth/crypto"
 	"github.com/tyler-smith/go-bip39"
 )
 
