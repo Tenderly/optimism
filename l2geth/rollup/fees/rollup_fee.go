@@ -69,29 +69,29 @@ type RollupOracle interface {
 // have enough ETH to cover their fee
 func CalculateTotalFee(tx *types.Transaction, gpo RollupOracle) (*big.Int, error) {
 	// Read the variables from the cache
-	l1GasPrice, err := gpo.SuggestL1GasPrice(context.Background())
+	_, err := gpo.SuggestL1GasPrice(context.Background())
 	if err != nil {
 		return nil, err
 	}
-	overhead, err := gpo.SuggestOverhead(context.Background())
+	_, err = gpo.SuggestOverhead(context.Background())
 	if err != nil {
 		return nil, err
 	}
-	scalar, err := gpo.SuggestScalar(context.Background())
+	_, err = gpo.SuggestScalar(context.Background())
 	if err != nil {
 		return nil, err
 	}
 
 	unsigned := copyTransaction(tx)
-	raw, err := rlpEncode(unsigned)
+	_, err = rlpEncode(unsigned)
 	if err != nil {
 		return nil, err
 	}
 
-	l1Fee := CalculateL1Fee(raw, overhead, l1GasPrice, scalar)
+	//l1Fee := CalculateL1Fee(raw, overhead, l1GasPrice, scalar)
 	l2GasLimit := new(big.Int).SetUint64(tx.Gas())
 	l2Fee := new(big.Int).Mul(tx.GasPrice(), l2GasLimit)
-	fee := new(big.Int).Add(l1Fee, l2Fee)
+	fee := new(big.Int).Add(nil, l2Fee)
 	return fee, nil
 }
 
@@ -116,6 +116,8 @@ func CalculateTotalMsgFee(msg Message, state StateDB, gasUsed *big.Int, gpo *com
 	return fee, nil
 }
 
+var DaSwitchSlot = common.BigToHash(big.NewInt(10))
+
 // CalculateL1MsgFee computes the L1 portion of the fee given
 // a Message and a StateDB
 func CalculateL1MsgFee(msg Message, state StateDB, gpo *common.Address) (*big.Int, error) {
@@ -130,13 +132,17 @@ func CalculateL1MsgFee(msg Message, state StateDB, gpo *common.Address) (*big.In
 	}
 
 	l1GasPrice, overhead, scalar := readGPOStorageSlots(*gpo, state)
-	l1Fee := CalculateL1Fee(raw, overhead, l1GasPrice, scalar)
+	daSwitch := state.GetState(*gpo, DaSwitchSlot).Big()
+	if err != nil {
+		return nil, err
+	}
+	l1Fee := CalculateL1Fee(raw, overhead, l1GasPrice, scalar, daSwitch)
 	return l1Fee, nil
 }
 
 // CalculateL1Fee computes the L1 fee
-func CalculateL1Fee(data []byte, overhead, l1GasPrice *big.Int, scalar *big.Float) *big.Int {
-	l1GasUsed := CalculateL1GasUsed(data, overhead)
+func CalculateL1Fee(data []byte, overhead, l1GasPrice *big.Int, scalar *big.Float, daSwitch *big.Int) *big.Int {
+	l1GasUsed := CalculateL1GasUsed(data, overhead, daSwitch)
 	l1Fee := new(big.Int).Mul(l1GasUsed, l1GasPrice)
 	return mulByFloat(l1Fee, scalar)
 }
@@ -145,7 +151,10 @@ func CalculateL1Fee(data []byte, overhead, l1GasPrice *big.Int, scalar *big.Floa
 // constant sized overhead. The overhead can be decreased as the cost of the
 // batch submission goes down via contract optimizations. This will not overflow
 // under standard network conditions.
-func CalculateL1GasUsed(data []byte, overhead *big.Int) *big.Int {
+func CalculateL1GasUsed(data []byte, overhead *big.Int, daSwitch *big.Int) *big.Int {
+	if daSwitch.Cmp(common.Big1) == 0 {
+		return overhead
+	}
 	zeroes, ones := zeroesAndOnes(data)
 	zeroesGas := zeroes * params.TxDataZeroGas
 	onesGas := (ones + 68) * params.TxDataNonZeroGasEIP2028
@@ -157,15 +166,15 @@ func CalculateL1GasUsed(data []byte, overhead *big.Int) *big.Int {
 // on the receipt
 func DeriveL1GasInfo(msg Message, state StateDB) (*big.Int, *big.Int, *big.Int, *big.Float, error) {
 	tx := asTransaction(msg)
-	raw, err := rlpEncode(tx)
+	_, err := rlpEncode(tx)
 	if err != nil {
 		return nil, nil, nil, nil, err
 	}
 
-	l1GasPrice, overhead, scalar := readGPOStorageSlots(rcfg.L2GasPriceOracleAddress, state)
-	l1GasUsed := CalculateL1GasUsed(raw, overhead)
-	l1Fee := CalculateL1Fee(raw, overhead, l1GasPrice, scalar)
-	return l1Fee, l1GasPrice, l1GasUsed, scalar, nil
+	l1GasPrice, _, scalar := readGPOStorageSlots(rcfg.L2GasPriceOracleAddress, state)
+	//l1GasUsed := CalculateL1GasUsed(raw, overhead)
+	//l1Fee := CalculateL1Fee(raw, overhead, l1GasPrice, scalar)
+	return nil, l1GasPrice, nil, scalar, nil
 }
 
 func readGPOStorageSlots(addr common.Address, state StateDB) (*big.Int, *big.Int, *big.Float) {
